@@ -6,10 +6,21 @@
   "main": "main.js",
   "scripts": {
     "test": "node test.js",
-    "start": "node main.js"
+    "start": "node main.js",
+    "server": "node API/app.js",
+    "dev": "node API/app.js",
+    "api": "node API/app.js"
   },
   "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "ffmpeg-static": "^5.2.0",
+    "fluent-ffmpeg": "^2.1.3",
+    "multer": "^2.0.2",
+    "pg": "^8.13.1",
+    "pg-hstore": "^2.3.4",
     "sequelize": "^6.35.0",
-    "sqlite3": "^5.1.6"
+    "sqlite3": "^5.1.7"
   }
 }

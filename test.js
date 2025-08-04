@@ -34,7 +34,10 @@ async function testarSistema() {
       // Campos de mídia obrigatórios (itens 10-14)
       item10_midia: JSON.stringify(["foto_pneus_1.jpg", "foto_pneus_2.jpg"]),
       item11_midia: JSON.stringify(["foto_assoalho_1.jpg"]),
-      item12_midia: JSON.stringify(["foto_borracha_1.jpg", "foto_borracha_2.jpg"]),
+      item12_midia: JSON.stringify([
+        "foto_borracha_1.jpg",
+        "foto_borracha_2.jpg",
+      ]),
       item13_midia: JSON.stringify(["foto_lonas_1.jpg"]),
       item14_midia: JSON.stringify(["foto_teto_1.jpg", "foto_teto_2.jpg"]),
     });

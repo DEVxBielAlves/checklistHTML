@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BASELL - Etapa 3: Revisão e Finalização</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* Estilos personalizados para a Etapa 3 */
+      .status-btn {
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .status-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .status-btn.selected-ok {
+        background-color: #16a34a !important;
+        color: white !important;
+        border-color: #16a34a !important;
+        box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+      }
+
+      .status-btn.selected-not-ok {
+        background-color: #dc2626 !important;
+        color: white !important;
+        border-color: #dc2626 !important;
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+      }
+
+      .status-btn.selected-na {
+        background-color: #d97706 !important;
+        color: white !important;
+        border-color: #d97706 !important;
+        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+      }
+
+      /* Animação de pulso para botões selecionados */
+      @keyframes pulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+        }
+        70% {
+          box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+        }
+      }
+
+      .status-btn.selected-ok,
+      .status-btn.selected-not-ok,
+      .status-btn.selected-na {
+        animation: pulse 2s infinite;
+      }
+
+      /* Estilos para campos válidos/inválidos */
+      .campo-valido {
+        border-color: #10b981 !important;
+        background-color: #f0fdf4 !important;
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+      }
+
+      .campo-invalido {
+        border-color: #ef4444 !important;
+        background-color: #fef2f2 !important;
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+      }
+
+      /* Transições suaves */
+      .status-btn,
+      input {
+        transition: all 0.3s ease;
+      }
+
+      /* Modal de imagem */
+      .image-modal {
+        backdrop-filter: blur(5px);
+      }
+
+      .media-preview {
+        max-width: 200px;
+        max-height: 150px;
+        object-fit: cover;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+      }
+
+      .media-preview:hover {
+        transform: scale(1.05);
+      }
+
+      /* Estilos do carrossel */
+      .media-carousel {
+        max-width: 100%;
+      }
+
+      .carousel-container {
+        position: relative;
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
+      }
+
+      .carousel-wrapper {
+        position: relative;
+        width: 100%;
+        height: 200px;
+        background: #f8fafc;
+        border-radius: 12px;
+        overflow: hidden;
+      }
+
+      .carousel-track {
+        height: 100%;
+        will-change: transform;
+      }
+
+      .carousel-slide {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .carousel-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+      }
+
+      .carousel-image:hover {
+        transform: scale(1.02);
+      }
+
+      .carousel-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .carousel-btn:hover {
+        background: rgba(0, 0, 0, 0.9);
+        transform: translateY(-50%) scale(1.1);
+      }
+
+      .carousel-prev {
+        left: 10px;
+      }
+
+      .carousel-next {
+        right: 10px;
+      }
+
+      .carousel-indicators {
+        position: absolute;
+        bottom: 15px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 8px;
+        z-index: 10;
+      }
+
+      .indicator {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        border: none;
+        background: rgba(255, 255, 255, 0.5);
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .indicator.active {
+        background: white;
+        transform: scale(1.2);
+      }
+
+      .indicator:hover {
+        background: rgba(255, 255, 255, 0.8);
+      }
+    </style>
+  </head>
+  <body
+    class="bg-gradient-to-br from-blue-50 via-white to-indigo-50 min-h-screen"
+  >
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+      <!-- Cabeçalho -->
+      <div class="text-center mb-8">
+        <div
+          class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full mb-6 shadow-lg"
+        >
+          <svg
+            class="w-10 h-10 text-white"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+            ></path>
+          </svg>
+        </div>
+        <h1 class="text-4xl font-bold text-gray-800 mb-4">SISTEMA BASELL</h1>
+        <p class="text-xl text-gray-600 mb-2">
+          Plataforma de Checklist Digital - 3 Etapas de Verificação
+        </p>
+        <div
+          class="inline-flex items-center bg-emerald-100 text-emerald-800 px-4 py-2 rounded-full font-semibold"
+        >
+          <svg
+            class="w-5 h-5 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
+          </svg>
+          ETAPA 3 - REVISÃO E FINALIZAÇÃO
+        </div>
+      </div>
+
+      <!-- Conteúdo Principal da Etapa 3 -->
+      <div
+        class="bg-white rounded-2xl shadow-lg p-8 mb-8 border border-slate-200"
+      >
+        <div class="text-center mb-8">
+          <div
+            class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-full mb-4"
+          >
+            <svg
+              class="w-8 h-8 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              ></path>
+            </svg>
+          </div>
+          <h2 class="text-2xl font-bold text-gray-800 mb-3">
+            ETAPA 3 - Revisão e Finalização
+          </h2>
+          <p class="text-gray-600 text-lg">
+            Revisão completa de todas as verificações realizadas
+          </p>
+        </div>
+
+        <!-- Resumo dos Dados Básicos -->
+        <div
+          class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 mb-6 border border-blue-200 shadow-sm"
+        >
+          <h3 class="text-lg font-bold text-blue-800 mb-4 flex items-center">
+            <svg
+              class="w-5 h-5 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              ></path>
+            </svg>
+            Informações Básicas
+          </h3>
+          <div
+            class="grid grid-cols-1 md:grid-cols-3 gap-4"
+            id="basicInfoSummary"
+          >
+            <!-- Preenchido dinamicamente -->
+          </div>
+        </div>
+
+        <!-- Resumo das Perguntas (Itens 1-9) -->
+        <div
+          class="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl p-6 mb-6 border border-yellow-200 shadow-sm"
+        >
+          <h3 class="text-lg font-bold text-yellow-800 mb-4 flex items-center">
+            <svg
+              class="w-5 h-5 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+              ></path>
+            </svg>
+            Verificações de Segurança (Itens 1-9)
+          </h3>
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+            id="questionsSummary"
+          >
+            <!-- Preenchido dinamicamente -->
+          </div>
+        </div>
+
+        <!-- Resumo das Mídias (Itens 10-14) -->
+        <div
+          class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6 mb-6 border border-purple-200 shadow-sm"
+        >
+          <h3 class="text-lg font-bold text-purple-800 mb-4 flex items-center">
+            <svg
+              class="w-5 h-5 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2 2v12a2 2 0 002 2z"
+              ></path>
+            </svg>
+            Inspeções Visuais com Mídia (Itens 10-14)
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="mediaSummary">
+            <!-- Preenchido dinamicamente -->
+          </div>
+        </div>
+
+        <!-- Confirmação Final -->
+        <div
+          class="bg-gradient-to-r from-emerald-50 to-green-50 rounded-xl p-6 mb-6 border border-emerald-200 shadow-sm"
+        >
+          <div class="flex items-center mb-4">
+            <div
+              class="w-12 h-12 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-full flex items-center justify-center mr-4"
+            >
+              <svg
+                class="w-6 h-6 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold text-emerald-800">
+                Confirmação Final
+              </h3>
+              <p class="text-emerald-700">
+                Confirme que todas as verificações foram realizadas corretamente
+                antes de finalizar o checklist.
+              </p>
+            </div>
+          </div>
+          <div class="bg-white rounded-lg p-4 border border-emerald-200">
+            <label class="flex items-center cursor-pointer group">
+              <input
+                type="checkbox"
+                id="finalConfirmation"
+                class="w-5 h-5 text-emerald-600 bg-gray-100 border-gray-300 rounded focus:ring-emerald-500 focus:ring-2 transition-all duration-200"
+              />
+              <span
+                class="ml-3 text-gray-800 font-semibold group-hover:text-emerald-700 transition-colors duration-200"
+                >Confirmo que todas as verificações estão corretas</span
+              >
+            </label>
+          </div>
+        </div>
+
+        <!-- Botões de Navegação -->
+        <div
+          class="flex flex-col sm:flex-row gap-4 justify-between mt-8 pt-6 border-t border-gray-200"
+        >
+          <button
+            type="button"
+            id="voltarBtn"
+            class="flex items-center justify-center px-6 py-3 bg-gradient-to-r from-gray-500 to-gray-600 text-white rounded-lg font-semibold shadow-lg hover:from-gray-600 hover:to-gray-700 transform hover:scale-105 transition-all duration-200 border-2 border-transparent hover:border-gray-300"
+          >
+            <svg
+              class="w-5 h-5 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 19l-7-7 7-7"
+              ></path>
+            </svg>
+            Voltar para Etapa 2
+          </button>
+          <button
+            type="button"
+            id="finalizeBtn"
+            disabled
+            class="flex items-center justify-center px-8 py-4 bg-gradient-to-r from-emerald-500 to-green-600 text-white rounded-lg font-bold text-lg shadow-xl hover:from-emerald-600 hover:to-green-700 transform hover:scale-105 transition-all duration-200 border-2 border-transparent hover:border-emerald-300 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed disabled:transform-none disabled:hover:border-transparent"
+          >
+            <svg
+              class="w-6 h-6 mr-3"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              ></path>
+            </svg>
+            Finalizar Checklist
+            <svg
+              class="w-5 h-5 ml-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 13l4 4L19 7"
+              ></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Botão de Teste -->
+      <div class="text-center mb-4">
+        <button
+          id="testarDados"
+          class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold shadow-lg transition-all duration-200"
+        >
+          🧪 Carregar Dados de Teste
+        </button>
+      </div>
+    </div>
+
+    <!-- Modal para visualização de imagens -->
+    <div
+      id="imageModal"
+      class="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center hidden image-modal"
+    >
+      <div class="relative max-w-4xl max-h-full p-4">
+        <button
+          id="closeModal"
+          class="absolute top-4 right-4 text-white text-2xl hover:text-gray-300 z-10"
+        >
+          ✕
+        </button>
+        <img
+          id="modalImage"
+          src=""
+          alt="Imagem ampliada"
+          class="max-w-full max-h-full object-contain rounded-lg"
+        />
+      </div>
+    </div>
+
+    <script>
+      // Variáveis globais
+      let checklistData = {};
+      let step2Data = {};
+
+      // Definições dos itens do checklist
+      const itemDefinitions = {
+        1: "Verificação de documentação do veículo",
+        2: "Inspeção visual externa do veículo",
+        3: "Verificação dos pneus e rodas",
+        4: "Teste dos sistemas de iluminação",
+        5: "Verificação dos níveis de fluidos",
+        6: "Inspeção do sistema de freios",
+        7: "Verificação da bateria e sistema elétrico",
+        8: "Teste dos equipamentos de segurança",
+        9: "Verificação final dos sistemas",
+        10: "Inspeção visual - Parte frontal",
+        11: "Inspeção visual - Laterais",
+        12: "Inspeção visual - Parte traseira",
+        13: "Inspeção visual - Interior",
+        14: "Inspeção visual - Motor",
+      };
+
+      // Função para carregar dados do localStorage
+      function loadDataFromStorage() {
+        try {
+          const savedChecklistData = localStorage.getItem(
+            "basell_checklistData"
+          );
+          const savedStep2Data = localStorage.getItem("basell_step2Data");
+
+          if (savedChecklistData) {
+            checklistData = JSON.parse(savedChecklistData);
+          }
+
+          if (savedStep2Data) {
+            step2Data = JSON.parse(savedStep2Data);
+          }
+
+          console.log("Dados carregados do localStorage:", {
+            checklistData,
+            step2Data,
+          });
+          return true;
+        } catch (error) {
+          console.error("Erro ao carregar dados do localStorage:", error);
+          return false;
+        }
+      }
+
+      // Função para carregar dados de teste
+      function loadTestData() {
+        checklistData = {
+          nomeMotorista: "João Silva (TESTE)",
+          placaVeiculo: "ABC-1234",
+          dataExecucao: "15/01/2025 às 14:30",
+          items: {
+            item1: "ok",
+            item2: "not_ok",
+            item3: "ok",
+            item4: "na",
+            item5: "ok",
+            item6: "not_ok",
+            item7: "ok",
+            item8: "ok",
+            item9: "na",
+          },
+        };
+
+        step2Data = {
+          items: {
+            10: {
+              status: "conforme",
+              observacao: "Parte frontal em bom estado",
+              media: [
+                {
+                  type: "image/jpeg",
+                  url: "https://via.placeholder.com/400x300/4CAF50/white?text=Frontal+OK",
+                  data: "https://via.placeholder.com/400x300/4CAF50/white?text=Frontal+OK",
+                },
+                {
+                  type: "image/jpeg",
+                  url: "https://via.placeholder.com/400x300/2196F3/white?text=Farol+Esquerdo",
+                  data: "https://via.placeholder.com/400x300/2196F3/white?text=Farol+Esquerdo",
+                },
+              ],
+            },
+            11: {
+              status: "conforme",
+              observacao: "Laterais sem avarias",
+              media: [
+                {
+                  type: "image/jpeg",
+                  url: "https://via.placeholder.com/400x300/4CAF50/white?text=Lateral+Direita",
+                  data: "https://via.placeholder.com/400x300/4CAF50/white?text=Lateral+Direita",
+                },
+                {
+                  type: "image/jpeg",
+                  url: "https://via.placeholder.com/400x300/4CAF50/white?text=Lateral+Esquerda",
+                  data: "https://via.placeholder.com/400x300/4CAF50/white?text=Lateral+Esquerda",
+                },
+                {
+                  type: "image/jpeg",
+                  url: "https://via.placeholder.com/400x300/FF9800/white?text=Porta+Traseira",
+                  data: "https://via.placeholder.com/400x300/FF9800/white?text=Porta+Traseira",
+                },
+              ],
+            },
+            12: {
+              status: "nao_conforme",
+              observacao: "Pequeno arranhão na traseira",
+              media: [
+                {
+                  type: "image/jpeg",
+                  url: "https://via.placeholder.com/400x300/F44336/white?text=Arranhao+Traseira",
+                  data: "https://via.placeholder.com/400x300/F44336/white?text=Arranhao+Traseira",
+                },
+              ],
+            },
+            13: {
+              status: "conforme",
+              observacao: "Interior limpo e organizado",
+              media: [
+                {
+                  type: "image/jpeg",
+                  url: "https://via.placeholder.com/400x300/4CAF50/white?text=Painel+OK",
+                  data: "https://via.placeholder.com/400x300/4CAF50/white?text=Painel+OK",
+                },
+                {
+                  type: "image/jpeg",
+                  url: "https://via.placeholder.com/400x300/4CAF50/white?text=Bancos+OK",
+                  data: "https://via.placeholder.com/400x300/4CAF50/white?text=Bancos+OK",
+                },
+                {
+                  type: "image/jpeg",
+                  url: "https://via.placeholder.com/400x300/4CAF50/white?text=Volante+OK",
+                  data: "https://via.placeholder.com/400x300/4CAF50/white?text=Volante+OK",
+                },
+                {
+                  type: "image/jpeg",
+                  url: "https://via.placeholder.com/400x300/4CAF50/white?text=Pedais+OK",
+                  data: "https://via.placeholder.com/400x300/4CAF50/white?text=Pedais+OK",
+                },
+              ],
+            },
+            14: {
+              status: "conforme",
+              observacao: "Motor funcionando normalmente",
+              media: [
+                {
+                  type: "image/jpeg",
+                  url: "https://via.placeholder.com/400x300/4CAF50/white?text=Motor+OK",
+                  data: "https://via.placeholder.com/400x300/4CAF50/white?text=Motor+OK",
+                },
+                {
+                  type: "image/jpeg",
+                  url: "https://via.placeholder.com/400x300/2196F3/white?text=Oleo+OK",
+                  data: "https://via.placeholder.com/400x300/2196F3/white?text=Oleo+OK",
+                },
+              ],
+            },
+          },
+        };
+
+        console.log("Dados de teste carregados:", { checklistData, step2Data });
+        populateChecklistSummary();
+      }
+
+      // Função para popular o resumo do checklist
+      function populateChecklistSummary() {
+        console.log("=== Populando resumo do checklist ===");
+        console.log("checklistData:", checklistData);
+        console.log("step2Data:", step2Data);
+
+        // Verificar se os elementos existem
+        const basicInfoSummary = document.getElementById("basicInfoSummary");
+        const questionsSummary = document.getElementById("questionsSummary");
+        const mediaSummary = document.getElementById("mediaSummary");
+
+        if (!basicInfoSummary || !questionsSummary || !mediaSummary) {
+          console.error("Elementos da etapa 3 não encontrados!");
+          return;
+        }
+
+        // 1. Popular informações básicas
+        basicInfoSummary.innerHTML = `
+                <div class="bg-white p-4 rounded-lg border border-blue-100">
+                    <h4 class="font-semibold text-blue-700 mb-2">Motorista</h4>
+                    <p class="text-gray-800">${
+                      checklistData.nomeMotorista || "Não informado"
+                    }</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg border border-blue-100">
+                    <h4 class="font-semibold text-blue-700 mb-2">Placa do Veículo</h4>
+                    <p class="text-gray-800">${
+                      checklistData.placaVeiculo || "Não informado"
+                    }</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg border border-blue-100">
+                    <h4 class="font-semibold text-blue-700 mb-2">Data de Execução</h4>
+                    <p class="text-gray-800">${
+                      checklistData.dataExecucao || "Não informado"
+                    }</p>
+                </div>
+            `;
+
+        // 2. Popular resumo das perguntas (itens 1-9)
+        let questionsHTML = "";
+        for (let i = 1; i <= 9; i++) {
+          const itemKey = `item${i}`;
+          const status =
+            checklistData.items && checklistData.items[itemKey]
+              ? checklistData.items[itemKey]
+              : "Não respondido";
+          const statusText = getStatusText(status);
+          const statusClass = getStatusClass(status);
+          const statusIcon = getStatusIcon(status);
+
+          questionsHTML += `
+                    <div class="bg-white p-4 rounded-lg border border-yellow-100 ${statusClass}">
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="font-semibold text-yellow-700">Item ${i}</h4>
+                            <span class="text-2xl">${statusIcon}</span>
+                        </div>
+                        <p class="text-sm text-gray-600 mb-2">${itemDefinitions[i]}</p>
+                        <p class="font-medium">${statusText}</p>
+                    </div>
+                `;
+        }
+        questionsSummary.innerHTML = questionsHTML;
+
+        // 3. Popular resumo das mídias (itens 10-14)
+        let mediaHTML = "";
+        for (let i = 10; i <= 14; i++) {
+          const item =
+            step2Data.items && step2Data.items[i] ? step2Data.items[i] : null;
+          const status = item ? item.status : "Não verificado";
+          const observacao = item ? item.observacao : "Sem observações";
+          const mediaCount = item && item.media ? item.media.length : 0;
+          const statusText = getMediaStatusText(status);
+          const statusClass = getMediaStatusClass(status);
+          const statusIcon = getMediaStatusIcon(status);
+
+          mediaHTML += `
+                    <div class="bg-white p-4 rounded-lg border border-purple-100 ${statusClass}">
+                        <div class="flex items-center justify-between mb-2">
+                            <h4 class="font-semibold text-purple-700">Item ${i}</h4>
+                            <span class="text-2xl">${statusIcon}</span>
+                        </div>
+                        <p class="text-sm text-gray-600 mb-2">${
+                          itemDefinitions[i]
+                        }</p>
+                        <p class="font-medium mb-2">${statusText}</p>
+                        <div class="text-sm text-gray-600 mb-2">Observação: ${observacao}</div>
+                        <div class="text-xs text-gray-500 mb-2">Mídias anexadas: ${mediaCount}</div>
+                        ${
+                          item && item.media && item.media.length > 0
+                            ? generateMediaPreview(item.media, i)
+                            : ""
+                        }
+                    </div>
+                `;
+        }
+        mediaSummary.innerHTML = mediaHTML;
+
+        console.log("Resumo populado com sucesso!");
+      }
+
+      // Funções auxiliares para status
+      function getStatusText(status) {
+        switch (status) {
+          case "ok":
+            return "Conforme";
+          case "not_ok":
+            return "Não Conforme";
+          case "na":
+            return "Não Aplicável";
+          default:
+            return "Não Respondido";
+        }
+      }
+
+      function getStatusClass(status) {
+        switch (status) {
+          case "ok":
+            return "border-green-200 bg-green-50";
+          case "not_ok":
+            return "border-red-200 bg-red-50";
+          case "na":
+            return "border-orange-200 bg-orange-50";
+          default:
+            return "border-gray-200 bg-gray-50";
+        }
+      }
+
+      function getStatusIcon(status) {
+        switch (status) {
+          case "ok":
+            return "✅";
+          case "not_ok":
+            return "❌";
+          case "na":
+            return "⚠️";
+          default:
+            return "❓";
+        }
+      }
+
+      function getMediaStatusText(status) {
+        switch (status) {
+          case "conforme":
+            return "Conforme";
+          case "nao_conforme":
+            return "Não Conforme";
+          case "nao_aplicavel":
+            return "Não Aplicável";
+          default:
+            return "Não Verificado";
+        }
+      }
+
+      function getMediaStatusClass(status) {
+        switch (status) {
+          case "conforme":
+            return "border-green-200 bg-green-50";
+          case "nao_conforme":
+            return "border-red-200 bg-red-50";
+          case "nao_aplicavel":
+            return "border-orange-200 bg-orange-50";
+          default:
+            return "border-gray-200 bg-gray-50";
+        }
+      }
+
+      function getMediaStatusIcon(status) {
+        switch (status) {
+          case "conforme":
+            return "✅";
+          case "nao_conforme":
+            return "❌";
+          case "nao_aplicavel":
+            return "⚠️";
+          default:
+            return "❓";
+        }
+      }
+
+      // Função para gerar preview de mídia com carrossel
+      function generateMediaPreview(mediaArray, itemId) {
+        if (!mediaArray || mediaArray.length === 0) return "";
+
+        console.log(`Gerando preview para item ${itemId}:`, mediaArray);
+
+        const carouselId = `carousel-${itemId}`;
+        let previewHTML = `<div class="mt-3 media-carousel" id="${carouselId}">`;
+
+        if (mediaArray.length === 1) {
+          // Uma única imagem
+          const media = mediaArray[0];
+          const mediaUrl = getMediaUrl(media);
+          const isImage = isImageMedia(media);
+
+          if (isImage && mediaUrl) {
+            previewHTML += `
+                        <div class="carousel-container">
+                            <img src="${mediaUrl}" 
+                                 alt="Mídia 1" 
+                                 class="carousel-image w-full h-48 object-cover rounded-lg cursor-pointer" 
+                                 onclick="openImageModal('${mediaUrl}')" 
+                                 onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlbSBuw6NvIGVuY29udHJhZGE8L3RleHQ+PC9zdmc+'" />
+                        </div>
+                    `;
+          } else {
+            const fileName = getMediaName(media);
+            previewHTML += `
+                        <div class="bg-gray-100 p-3 rounded-lg text-center text-gray-600">
+                            📎 ${fileName}
+                        </div>
+                    `;
+          }
+        } else {
+          // Múltiplas imagens - carrossel completo
+          previewHTML += `
+                    <div class="carousel-container relative">
+                        <div class="carousel-wrapper overflow-hidden rounded-lg">
+                            <div class="carousel-track flex transition-transform duration-300" id="track-${itemId}">`;
+
+          mediaArray.forEach((media, index) => {
+            const mediaUrl = getMediaUrl(media);
+            const isImage = isImageMedia(media);
+
+            if (isImage && mediaUrl) {
+              previewHTML += `
+                            <div class="carousel-slide flex-shrink-0 w-full">
+                                <img src="${mediaUrl}" 
+                                     alt="Mídia ${index + 1}" 
+                                     class="carousel-image w-full h-48 object-cover cursor-pointer" 
+                                     onclick="openImageModal('${mediaUrl}')" 
+                                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlbSBuw6NvIGVuY29udHJhZGE8L3RleHQ+PC9zdmc+'" />
+                            </div>
+                        `;
+            } else {
+              const fileName = getMediaName(media);
+              previewHTML += `
+                            <div class="carousel-slide flex-shrink-0 w-full">
+                                <div class="bg-gray-100 p-8 rounded-lg text-center text-gray-600 h-48 flex items-center justify-center">
+                                    📎 ${fileName}
+                                </div>
+                            </div>
+                        `;
+            }
+          });
+
+          previewHTML += `
+                            </div>
+                        </div>
+                        
+                        <!-- Controles do carrossel -->
+                        <button class="carousel-btn carousel-prev absolute left-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-opacity-75" onclick="moveCarousel('${itemId}', -1)">
+                            ‹
+                        </button>
+                        <button class="carousel-btn carousel-next absolute right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-opacity-75" onclick="moveCarousel('${itemId}', 1)">
+                            ›
+                        </button>
+                        
+                        <!-- Indicadores -->
+                        <div class="carousel-indicators absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-2">`;
+
+          for (let i = 0; i < mediaArray.length; i++) {
+            previewHTML += `
+                        <button class="indicator w-2 h-2 rounded-full ${
+                          i === 0 ? "bg-white" : "bg-white bg-opacity-50"
+                        }" 
+                                onclick="goToSlide('${itemId}', ${i})"></button>
+                    `;
+          }
+
+          previewHTML += `
+                        </div>
+                    </div>
+                `;
+        }
+
+        previewHTML += "</div>";
+        return previewHTML;
+      }
+
+      // Funções auxiliares para mídia
+      function getMediaUrl(media) {
+        if (!media) return null;
+
+        // Se é um File object
+        if (media instanceof File) {
+          return URL.createObjectURL(media);
+        }
+
+        // Se é um objeto com propriedades url, data, etc.
+        if (typeof media === "object") {
+          return media.url || media.data || media.src || null;
+        }
+
+        // Se é uma string (URL direta)
+        if (typeof media === "string") {
+          return media;
+        }
+
+        return null;
+      }
+
+      function isImageMedia(media) {
+        if (!media) return false;
+
+        // Verificar tipo MIME
+        if (media.type && media.type.startsWith("image/")) {
+          return true;
+        }
+
+        // Verificar extensão do arquivo
+        const name = getMediaName(media);
+        if (name) {
+          const ext = name.toLowerCase().split(".").pop();
+          return ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"].includes(
+            ext
+          );
+        }
+
+        return false;
+      }
+
+      function getMediaName(media) {
+        if (!media) return "Arquivo desconhecido";
+
+        if (media instanceof File) {
+          return media.name;
+        }
+
+        if (typeof media === "object") {
+          return media.name || media.filename || "Arquivo anexado";
+        }
+
+        if (typeof media === "string") {
+          return media.split("/").pop() || "Arquivo";
+        }
+
+        return "Arquivo anexado";
+      }
+
+      // Função para abrir modal de imagem
+      function openImageModal(imageSrc) {
+        const modal = document.getElementById("imageModal");
+        const modalImage = document.getElementById("modalImage");
+        modalImage.src = imageSrc;
+        modal.classList.remove("hidden");
+      }
+
+      // Função para fechar modal de imagem
+      function closeImageModal() {
+        const modal = document.getElementById("imageModal");
+        modal.classList.add("hidden");
+      }
+
+      // Variáveis globais do carrossel
+      const carouselStates = {};
+
+      // Função para mover carrossel
+      function moveCarousel(itemId, direction) {
+        if (!carouselStates[itemId]) {
+          carouselStates[itemId] = { currentSlide: 0 };
+        }
+
+        const track = document.getElementById(`track-${itemId}`);
+        const slides = track.children;
+        const totalSlides = slides.length;
+
+        carouselStates[itemId].currentSlide += direction;
+
+        if (carouselStates[itemId].currentSlide >= totalSlides) {
+          carouselStates[itemId].currentSlide = 0;
+        } else if (carouselStates[itemId].currentSlide < 0) {
+          carouselStates[itemId].currentSlide = totalSlides - 1;
+        }
+
+        updateCarouselPosition(itemId);
+        updateIndicators(itemId);
+      }
+
+      // Função para ir para slide específico
+      function goToSlide(itemId, slideIndex) {
+        if (!carouselStates[itemId]) {
+          carouselStates[itemId] = { currentSlide: 0 };
+        }
+
+        carouselStates[itemId].currentSlide = slideIndex;
+        updateCarouselPosition(itemId);
+        updateIndicators(itemId);
+      }
+
+      // Função para atualizar posição do carrossel
+      function updateCarouselPosition(itemId) {
+        const track = document.getElementById(`track-${itemId}`);
+        const currentSlide = carouselStates[itemId].currentSlide;
+        const translateX = -currentSlide * 100;
+        track.style.transform = `translateX(${translateX}%)`;
+      }
+
+      // Função para atualizar indicadores
+      function updateIndicators(itemId) {
+        const carousel = document.getElementById(`carousel-${itemId}`);
+        const indicators = carousel.querySelectorAll(".indicator");
+        const currentSlide = carouselStates[itemId].currentSlide;
+
+        indicators.forEach((indicator, index) => {
+          if (index === currentSlide) {
+            indicator.classList.add("active");
+          } else {
+            indicator.classList.remove("active");
+          }
+        });
+      }
+
+      // Função para salvar dados no banco SQLite usando Sequelize
+      async function saveToDatabase() {
+        try {
+          const checklistRecord = {
+            id: Date.now(), // ID único baseado em timestamp
+            nomeMotorista: checklistData.nomeMotorista,
+            placaVeiculo: checklistData.placaVeiculo,
+            dataExecucao: checklistData.dataExecucao,
+            dataFinalizacao: new Date().toLocaleString("pt-BR"),
+
+            // Itens 1-9 (verificações básicas)
+            item1: checklistData.items?.item1 || "not_answered",
+            item2: checklistData.items?.item2 || "not_answered",
+            item3: checklistData.items?.item3 || "not_answered",
+            item4: checklistData.items?.item4 || "not_answered",
+            item5: checklistData.items?.item5 || "not_answered",
+            item6: checklistData.items?.item6 || "not_answered",
+            item7: checklistData.items?.item7 || "not_answered",
+            item8: checklistData.items?.item8 || "not_answered",
+            item9: checklistData.items?.item9 || "not_answered",
+
+            // Itens 10-14 (verificações com mídia)
+            item10_status: step2Data.items?.[10]?.status || "not_verified",
+            item10_observacao: step2Data.items?.[10]?.observacao || "",
+            item10_media: JSON.stringify(step2Data.items?.[10]?.media || []),
+
+            item11_status: step2Data.items?.[11]?.status || "not_verified",
+            item11_observacao: step2Data.items?.[11]?.observacao || "",
+            item11_media: JSON.stringify(step2Data.items?.[11]?.media || []),
+
+            item12_status: step2Data.items?.[12]?.status || "not_verified",
+            item12_observacao: step2Data.items?.[12]?.observacao || "",
+            item12_media: JSON.stringify(step2Data.items?.[12]?.media || []),
+
+            item13_status: step2Data.items?.[13]?.status || "not_verified",
+            item13_observacao: step2Data.items?.[13]?.observacao || "",
+            item13_media: JSON.stringify(step2Data.items?.[13]?.media || []),
+
+            item14_status: step2Data.items?.[14]?.status || "not_verified",
+            item14_observacao: step2Data.items?.[14]?.observacao || "",
+            item14_media: JSON.stringify(step2Data.items?.[14]?.media || []),
+
+            status: "finalizado",
+          };
+
+          // Simular salvamento no banco (em produção, seria uma chamada para API)
+          console.log("Salvando no banco SQLite:", checklistRecord);
+
+          // Salvar também no localStorage como backup
+          const savedChecklists = JSON.parse(
+            localStorage.getItem("basell_saved_checklists") || "[]"
+          );
+          savedChecklists.push(checklistRecord);
+          localStorage.setItem(
+            "basell_saved_checklists",
+            JSON.stringify(savedChecklists)
+          );
+
+          return checklistRecord;
+        } catch (error) {
+          console.error("Erro ao salvar no banco:", error);
+          throw error;
+        }
+      }
+
+      // Função para atualizar status do checklist no banco de dados
+      async function updateChecklistStatus() {
+        try {
+          // Recuperar o ID do checklist salvo anteriormente
+          const checklistId = localStorage.getItem(
+            "basell_current_checklist_id"
+          );
+
+          if (!checklistId) {
+            throw new Error(
+              "ID do checklist não encontrado. O checklist pode não ter sido salvo corretamente."
+            );
+          }
+
+          // Importar o modelo ChecklistBasell
+          const { ChecklistBasell } = await import("../models/checklist.js");
+
+          // Atualizar o status para 'terminou'
+          const updatedRecord = await ChecklistBasell.update(
+            {
+              status: "terminou",
+              dataFinalizacao: new Date().toISOString(),
+            },
+            {
+              where: { id: checklistId },
+              returning: true,
+            }
+          );
+
+          console.log(
+            'Status do checklist atualizado para "terminou":',
+            updatedRecord
+          );
+          return updatedRecord;
+        } catch (error) {
+          console.error("Erro ao atualizar status no banco:", error);
+          throw error;
+        }
+      }
+
+      // Função para finalizar checklist
+      async function finalizeChecklist() {
+        if (!document.getElementById("finalConfirmation").checked) {
+          alert(
+            "Por favor, confirme que todas as verificações estão corretas antes de finalizar."
+          );
+          return;
+        }
+
+        const finalizeBtn = document.getElementById("finalizeBtn");
+        const originalText = finalizeBtn.innerHTML;
+
+        try {
+          // Mostrar loading
+          finalizeBtn.innerHTML = "⏳ Finalizando...";
+          finalizeBtn.disabled = true;
+
+          // Atualizar status no banco de dados
+          await updateChecklistStatus();
+
+          console.log("Checklist finalizado com sucesso!");
+
+          // Mostrar sucesso
+          finalizeBtn.innerHTML = "✅ Finalizado!";
+
+          // Limpar localStorage dos dados temporários
+          localStorage.removeItem("basell_checklistData");
+          localStorage.removeItem("basell_step2Data");
+          localStorage.removeItem("basell_current_checklist_id");
+
+          // Mostrar mensagem de sucesso na própria página
+          showSuccessMessage();
+
+        } catch (error) {
+          console.error("Erro ao finalizar checklist:", error);
+          alert("Erro ao finalizar o checklist. Tente novamente.");
+
+          // Restaurar botão
+          finalizeBtn.innerHTML = originalText;
+          finalizeBtn.disabled = false;
+        }
+      }
+
+      // Função para mostrar mensagem de sucesso
+      function showSuccessMessage() {
+        // Criar overlay de sucesso
+        const successOverlay = document.createElement('div');
+        successOverlay.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+        successOverlay.innerHTML = `
+          <div class="bg-white rounded-lg p-8 max-w-md mx-4 text-center shadow-2xl">
+            <div class="mb-6">
+              <div class="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </div>
+              <h2 class="text-2xl font-bold text-gray-900 mb-2">Checklist Finalizado!</h2>
+              <p class="text-gray-600 mb-4">O checklist foi salvo com sucesso no sistema.</p>
+            </div>
+            
+            <div class="bg-gray-50 rounded-lg p-4 mb-6 text-left">
+              <div class="grid grid-cols-1 gap-2 text-sm">
+                <div><span class="font-semibold">Motorista:</span> ${checklistData.nomeMotorista}</div>
+                <div><span class="font-semibold">Veículo:</span> ${checklistData.placaVeiculo}</div>
+                <div><span class="font-semibold">Data:</span> ${new Date().toLocaleString('pt-BR')}</div>
+                <div><span class="font-semibold">Status:</span> <span class="text-green-600 font-semibold">Concluído</span></div>
+              </div>
+            </div>
+            
+            <div class="flex flex-col gap-3">
+              <button 
+                onclick="window.location.href = 'basell.html'" 
+                class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+              >
+                🏠 Voltar ao Início
+              </button>
+              <button 
+                onclick="window.print()" 
+                class="w-full bg-gray-600 text-white py-2 px-6 rounded-lg hover:bg-gray-700 transition-colors"
+              >
+                🖨️ Imprimir Relatório
+              </button>
+            </div>
+          </div>
+        `;
+        
+        document.body.appendChild(successOverlay);
+        
+        // Fechar overlay ao clicar fora
+        successOverlay.addEventListener('click', function(e) {
+          if (e.target === successOverlay) {
+            successOverlay.remove();
+          }
+        });
+      }
+
+      // Função para voltar à etapa anterior
+      function goToPreviousStep() {
+        window.location.href = "basell.html#step2";
+      }
+
+      // Event listeners
+      document.addEventListener("DOMContentLoaded", function () {
+        // Carregar dados ao inicializar a página
+        if (!loadDataFromStorage()) {
+          console.log(
+            "Nenhum dado encontrado no localStorage. Use o botão de teste para carregar dados de exemplo."
+          );
+        } else {
+          populateChecklistSummary();
+        }
+
+        // Configurar botões
+        document
+          .getElementById("testarDados")
+          .addEventListener("click", loadTestData);
+        document
+          .getElementById("voltarBtn")
+          .addEventListener("click", goToPreviousStep);
+        document
+          .getElementById("finalizeBtn")
+          .addEventListener("click", finalizeChecklist);
+        document
+          .getElementById("closeModal")
+          .addEventListener("click", closeImageModal);
+
+        // Configurar checkbox de confirmação
+        document
+          .getElementById("finalConfirmation")
+          .addEventListener("change", function () {
+            document.getElementById("finalizeBtn").disabled = !this.checked;
+          });
+
+        // Fechar modal ao clicar fora da imagem
+        document
+          .getElementById("imageModal")
+          .addEventListener("click", function (e) {
+            if (e.target === this) {
+              closeImageModal();
+            }
+          });
+      });
+
+      console.log("Etapa 3 - Sistema BASELL carregado com sucesso!");
+    </script>
+  </body>
+</html>
