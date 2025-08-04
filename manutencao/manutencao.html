@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              'roboto': ['Roboto Condensed', 'sans-serif'],
+              'ubuntu': ['Ubuntu', 'sans-serif']
+            },
+            colors: {
+              primary: {
+                50: '#eff6ff',
+                100: '#dbeafe',
+                500: '#3b82f6',
+                600: '#2563eb',
+                700: '#1d4ed8'
+              },
+              success: {
+                50: '#f0fdf4',
+                100: '#dcfce7',
+                500: '#22c55e',
+                600: '#16a34a',
+                700: '#15803d'
+              },
+              danger: {
+                50: '#fef2f2',
+                100: '#fee2e2',
+                500: '#ef4444',
+                600: '#dc2626',
+                700: '#b91c1c'
+              },
+              warning: {
+                50: '#fffbeb',
+                100: '#fef3c7',
+                500: '#f59e0b',
+                600: '#d97706',
+                700: '#b45309'
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap"
+      rel="stylesheet"
+    />
+    <title>Sistema de Manutenção - Checklist Completo</title>
+    <link rel="stylesheet" href="manutencao.css" />
+  </head>
+  <body class="bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen font-ubuntu">
+    <div class="container max-w-4xl mx-auto px-4 py-6">
+      <!-- Header fixo -->
+      <header class="header bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-xl shadow-lg mb-6 p-6">
+        <div class="flex items-center justify-between">
+          <!-- Botão Voltar ao Início -->
+          <button 
+            onclick="window.location.href='../index.html'" 
+            class="flex items-center space-x-2 bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg transition-all duration-200 backdrop-blur-sm border border-white/30 hover:border-white/50"
+            title="Voltar ao Início"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+            </svg>
+            <span class="text-sm font-medium hidden md:inline">Voltar ao Início</span>
+          </button>
+          
+          <!-- Título Central -->
+          <div class="flex items-center space-x-3">
+            <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+            </svg>
+            <h1 class="text-2xl md:text-3xl font-bold font-roboto">SISTEMA DE MANUTENÇÃO</h1>
+          </div>
+          
+          <!-- Espaço para balanceamento -->
+          <div class="w-24 md:w-32"></div>
+        </div>
+        <p class="text-center text-primary-100 mt-2 text-sm md:text-base">Checklist Completo de Inspeções e Manutenção</p>
+      </header>
+
+      <!-- Progress bar e passos -->
+      <div class="progress-bar bg-gray-200 rounded-full h-3 mb-6 shadow-inner">
+        <div class="progress-fill bg-gradient-to-r from-primary-500 to-primary-600 h-3 rounded-full transition-all duration-500 ease-out shadow-sm" id="progressFill" style="width: 0%"></div>
+      </div>
+      <nav class="step-indicator grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2 mb-8">
+        <div class="step active bg-primary-600 text-white rounded-lg px-3 py-2 text-xs md:text-sm font-medium text-center shadow-md transition-all duration-300" id="step0">Dados</div>
+        <div class="step bg-white text-gray-600 rounded-lg px-3 py-2 text-xs md:text-sm font-medium text-center shadow-md hover:shadow-lg transition-all duration-300" id="step1">Frontal</div>
+        <div class="step bg-white text-gray-600 rounded-lg px-3 py-2 text-xs md:text-sm font-medium text-center shadow-md hover:shadow-lg transition-all duration-300" id="step2">Traseira</div>
+        <div class="step bg-white text-gray-600 rounded-lg px-3 py-2 text-xs md:text-sm font-medium text-center shadow-md hover:shadow-lg transition-all duration-300" id="step3">Lateral Esq.</div>
+        <div class="step bg-white text-gray-600 rounded-lg px-3 py-2 text-xs md:text-sm font-medium text-center shadow-md hover:shadow-lg transition-all duration-300" id="step4">Lateral Dir.</div>
+        <div class="step bg-white text-gray-600 rounded-lg px-3 py-2 text-xs md:text-sm font-medium text-center shadow-md hover:shadow-lg transition-all duration-300" id="step5">Interna</div>
+        <div class="step bg-white text-gray-600 rounded-lg px-3 py-2 text-xs md:text-sm font-medium text-center shadow-md hover:shadow-lg transition-all duration-300" id="step6">Equipamentos</div>
+        <div class="step bg-white text-gray-600 rounded-lg px-3 py-2 text-xs md:text-sm font-medium text-center shadow-md hover:shadow-lg transition-all duration-300" id="step7">1º Eixo</div>
+        <div class="step bg-white text-gray-600 rounded-lg px-3 py-2 text-xs md:text-sm font-medium text-center shadow-md hover:shadow-lg transition-all duration-300" id="step8">2º Eixo</div>
+        <div class="step bg-white text-gray-600 rounded-lg px-3 py-2 text-xs md:text-sm font-medium text-center shadow-md hover:shadow-lg transition-all duration-300" id="step9">3º Eixo</div>
+        <div class="step bg-white text-gray-600 rounded-lg px-3 py-2 text-xs md:text-sm font-medium text-center shadow-md hover:shadow-lg transition-all duration-300" id="step10">4º Eixo</div>
+        <div class="step bg-white text-gray-600 rounded-lg px-3 py-2 text-xs md:text-sm font-medium text-center shadow-md hover:shadow-lg transition-all duration-300" id="step11">Finalização</div>
+      </nav>
+
+      <!-- Página 0 - Dados Iniciais -->
+      <section class="section active bg-white rounded-xl shadow-lg p-6 mb-6" id="section0">
+        <div class="flex items-center space-x-3 mb-6">
+          <svg class="w-6 h-6 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <h2 class="text-xl md:text-2xl font-bold text-gray-800 font-roboto">Dados Iniciais do Checklist</h2>
+        </div>
+        <form id="initialDataForm" novalidate class="space-y-6">
+          <div class="form-group">
+            <label for="driverName" class="block text-sm font-medium text-gray-700 mb-2">Nome do Motorista *</label>
+            <input
+              type="text"
+              id="driverName"
+              required
+              placeholder="Nome completo do motorista"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors duration-200"
+            />
+            <span class="error-message text-danger-600 text-sm mt-1 hidden" id="driverNameError"
+              >Campo obrigatório</span
+            >
+          </div>
+          <div class="form-group">
+            <label for="inspectorName" class="block text-sm font-medium text-gray-700 mb-2">Nome do Vistoriador/Inspetor *</label>
+            <input
+              type="text"
+              id="inspectorName"
+              required
+              placeholder="Nome completo do vistoriador"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors duration-200"
+            />
+            <span class="error-message text-danger-600 text-sm mt-1 hidden" id="inspectorNameError"
+              >Campo obrigatório</span
+            >
+          </div>
+          <div class="form-group">
+            <label for="vehiclePlate" class="block text-sm font-medium text-gray-700 mb-2">Placa do Veículo *</label>
+            <input
+              type="text"
+              id="vehiclePlate"
+              required
+              maxlength="8"
+              placeholder="Ex: ABC-1234"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors duration-200"
+            />
+            <span class="error-message text-danger-600 text-sm mt-1 hidden" id="vehiclePlateError"
+              >Placa inválida</span
+            >
+          </div>
+          <div class="form-group">
+            <label for="startOdometer" class="block text-sm font-medium text-gray-700 mb-2">Quilometragem Inicial *</label>
+            <input
+              type="number"
+              id="startOdometer"
+              required
+              min="0"
+              placeholder="Quilometragem inicial"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors duration-200"
+            />
+            <span class="error-message text-danger-600 text-sm mt-1 hidden" id="startOdometerError"
+              >Número válido obrigatório</span
+            >
+          </div>
+          <div class="navigation-buttons flex justify-end pt-6">
+            <button
+              type="button"
+              class="nav-btn btn-primary bg-gradient-to-r from-primary-600 to-primary-700 text-white px-6 py-3 rounded-lg font-medium hover:from-primary-700 hover:to-primary-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center space-x-2"
+              id="btnToStep1"
+              disabled
+            >
+              <span>Iniciar Checklist</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Página 1 - SEÇÃO FRONTAL -->
+      <section class="section bg-white rounded-xl shadow-lg p-6 mb-6 hidden" id="section1">
+        <div class="flex items-center space-x-3 mb-6">
+          <svg class="w-6 h-6 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"></path>
+          </svg>
+          <h2 class="text-xl md:text-2xl font-bold text-gray-800 font-roboto">Seção 1 - Frontal</h2>
+        </div>
+        <form id="frontalForm" novalidate class="space-y-6">
+          <div class="inspection-item bg-gray-50 rounded-lg p-4 border border-gray-200" data-item="1.1">
+            <h3 class="font-semibold text-gray-800 mb-3">Dianteiro amassado</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-danger-500 hover:text-danger-600 transition-all duration-200" data-value="sim" data-field="1.1">SIM</button>
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-success-500 hover:text-success-600 transition-all duration-200" data-value="nao" data-field="1.1">NÃO</button>
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-warning-500 hover:text-warning-600 transition-all duration-200" data-value="na" data-field="1.1">N/A</button>
+            </div>
+            <select required name="1.1" class="status-select hidden">
+              <option value="" disabled selected>Selecione</option>
+              <option value="sim">SIM</option>
+              <option value="nao">NÃO</option>
+              <option value="na">N/A</option>
+            </select>
+            <div class="media-upload bg-blue-50 border-2 border-dashed border-blue-300 rounded-lg p-4" data-media-for="1.1">
+              <label class="block text-sm font-medium text-blue-700 mb-2">📷 Foto obrigatória:</label>
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                multiple
+                required
+                class="media-input w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-600 file:text-white hover:file:bg-blue-700"
+              />
+              <div class="media-preview mt-2 grid grid-cols-2 md:grid-cols-3 gap-2"></div>
+            </div>
+          </div>
+          <div class="inspection-item bg-gray-50 rounded-lg p-4 border border-gray-200" data-item="1.2">
+            <h3 class="font-semibold text-gray-800 mb-3">Levanta fio</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-danger-500 hover:text-danger-600 transition-all duration-200" data-value="sim" data-field="1.2">SIM</button>
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-success-500 hover:text-success-600 transition-all duration-200" data-value="nao" data-field="1.2">NÃO</button>
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-warning-500 hover:text-warning-600 transition-all duration-200" data-value="na" data-field="1.2">N/A</button>
+            </div>
+            <select required name="1.2" class="status-select hidden">
+              <option value="" disabled selected>Selecione</option>
+              <option value="sim">SIM</option>
+              <option value="nao">NÃO</option>
+              <option value="na">N/A</option>
+            </select>
+            <div class="media-upload bg-blue-50 border-2 border-dashed border-blue-300 rounded-lg p-4" data-media-for="1.2">
+              <label class="block text-sm font-medium text-blue-700 mb-2">📷 Foto obrigatória:</label>
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                multiple
+                required
+                class="media-input w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-600 file:text-white hover:file:bg-blue-700"
+              />
+              <div class="media-preview mt-2 grid grid-cols-2 md:grid-cols-3 gap-2"></div>
+            </div>
+          </div>
+          <div class="inspection-item bg-gray-50 rounded-lg p-4 border border-gray-200" data-item="1.3">
+            <h3 class="font-semibold text-gray-800 mb-3">Frontal da carreta amassada</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-danger-500 hover:text-danger-600 transition-all duration-200" data-value="sim" data-field="1.3">SIM</button>
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-success-500 hover:text-success-600 transition-all duration-200" data-value="nao" data-field="1.3">NÃO</button>
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-warning-500 hover:text-warning-600 transition-all duration-200" data-value="na" data-field="1.3">N/A</button>
+            </div>
+            <select required name="1.3" class="status-select hidden">
+              <option value="" disabled selected>Selecione</option>
+              <option value="sim">SIM</option>
+              <option value="nao">NÃO</option>
+              <option value="na">N/A</option>
+            </select>
+            <div class="media-upload bg-blue-50 border-2 border-dashed border-blue-300 rounded-lg p-4" data-media-for="1.3">
+              <label class="block text-sm font-medium text-blue-700 mb-2">📷 Foto obrigatória:</label>
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                multiple
+                required
+                class="media-input w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-600 file:text-white hover:file:bg-blue-700"
+              />
+              <div class="media-preview mt-2 grid grid-cols-2 md:grid-cols-3 gap-2"></div>
+            </div>
+          </div>
+          <div class="navigation-buttons flex justify-between pt-6">
+            <button type="button" class="nav-btn btn-secondary bg-gray-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-600 transition-all duration-200 flex items-center space-x-2" id="btnBackTo0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+              </svg>
+              <span>Voltar</span>
+            </button>
+            <button
+              type="button"
+              class="nav-btn btn-primary bg-gradient-to-r from-primary-600 to-primary-700 text-white px-6 py-3 rounded-lg font-medium hover:from-primary-700 hover:to-primary-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center space-x-2"
+              id="btnToStep2"
+              disabled
+            >
+              <span>Próxima Seção</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Página 2 - SEÇÃO TRASEIRA -->
+      <section class="section bg-white rounded-xl shadow-lg p-6 mb-6 hidden" id="section2">
+        <div class="flex items-center space-x-3 mb-6">
+          <svg class="w-6 h-6 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"></path>
+          </svg>
+          <h2 class="text-xl md:text-2xl font-bold text-gray-800 font-roboto">Seção 2 - Traseira</h2>
+        </div>
+        <form id="rearForm" novalidate class="space-y-6">
+          <div class="inspection-item bg-gray-50 rounded-lg p-4 border border-gray-200" data-item="2.1">
+            <h3 class="font-semibold text-gray-800 mb-3">Lanternas queimadas</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-danger-500 hover:text-danger-600 transition-all duration-200" data-value="sim" data-field="2.1">SIM</button>
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-success-500 hover:text-success-600 transition-all duration-200" data-value="nao" data-field="2.1">NÃO</button>
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-warning-500 hover:text-warning-600 transition-all duration-200" data-value="na" data-field="2.1">N/A</button>
+            </div>
+            <select required name="2.1" class="status-select hidden">
+              <option value="" disabled selected>Selecione</option>
+              <option value="sim">SIM</option>
+              <option value="nao">NÃO</option>
+              <option value="na">N/A</option>
+            </select>
+            <div class="media-upload bg-blue-50 border-2 border-dashed border-blue-300 rounded-lg p-4" data-media-for="2.1">
+              <label class="block text-sm font-medium text-blue-700 mb-2">📷 Foto obrigatória:</label>
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                multiple
+                required
+                class="media-input w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-600 file:text-white hover:file:bg-blue-700"
+              />
+              <div class="media-preview mt-2 grid grid-cols-2 md:grid-cols-3 gap-2"></div>
+            </div>
+          </div>
+          <div class="inspection-item bg-gray-50 rounded-lg p-4 border border-gray-200" data-item="2.2">
+            <h3 class="font-semibold text-gray-800 mb-3">Lanternas quebradas</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-danger-500 hover:text-danger-600 transition-all duration-200" data-value="sim" data-field="2.2">SIM</button>
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-success-500 hover:text-success-600 transition-all duration-200" data-value="nao" data-field="2.2">NÃO</button>
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-warning-500 hover:text-warning-600 transition-all duration-200" data-value="na" data-field="2.2">N/A</button>
+            </div>
+            <select required name="2.2" class="status-select hidden">
+              <option value="" disabled selected>Selecione</option>
+              <option value="sim">SIM</option>
+              <option value="nao">NÃO</option>
+              <option value="na">N/A</option>
+            </select>
+            <div class="media-upload bg-blue-50 border-2 border-dashed border-blue-300 rounded-lg p-4" data-media-for="2.2">
+              <label class="block text-sm font-medium text-blue-700 mb-2">📷 Foto obrigatória:</label>
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                multiple
+                required
+                class="media-input w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-600 file:text-white hover:file:bg-blue-700"
+              />
+              <div class="media-preview mt-2 grid grid-cols-2 md:grid-cols-3 gap-2"></div>
+            </div>
+          </div>
+          <div class="inspection-item bg-gray-50 rounded-lg p-4 border border-gray-200" data-item="2.3">
+            <h3 class="font-semibold text-gray-800 mb-3">Batente de porta em boas condições</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-danger-500 hover:text-danger-600 transition-all duration-200" data-value="sim" data-field="2.3">SIM</button>
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-success-500 hover:text-success-600 transition-all duration-200" data-value="nao" data-field="2.3">NÃO</button>
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-warning-500 hover:text-warning-600 transition-all duration-200" data-value="na" data-field="2.3">N/A</button>
+            </div>
+            <select required name="2.3" class="status-select hidden">
+              <option value="" disabled selected>Selecione</option>
+              <option value="sim">SIM</option>
+              <option value="nao">NÃO</option>
+              <option value="na">N/A</option>
+            </select>
+            <div class="media-upload bg-blue-50 border-2 border-dashed border-blue-300 rounded-lg p-4" data-media-for="2.3">
+              <label class="block text-sm font-medium text-blue-700 mb-2">📷 Foto obrigatória:</label>
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                multiple
+                required
+                class="media-input w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-600 file:text-white hover:file:bg-blue-700"
+              />
+              <div class="media-preview mt-2 grid grid-cols-2 md:grid-cols-3 gap-2"></div>
+            </div>
+          </div>
+          <div class="inspection-item bg-gray-50 rounded-lg p-4 border border-gray-200" data-item="2.4">
+            <h3 class="font-semibold text-gray-800 mb-3">Faixa refletiva do para-choque em boas condições</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-danger-500 hover:text-danger-600 transition-all duration-200" data-value="sim" data-field="2.4">SIM</button>
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-success-500 hover:text-success-600 transition-all duration-200" data-value="nao" data-field="2.4">NÃO</button>
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-warning-500 hover:text-warning-600 transition-all duration-200" data-value="na" data-field="2.4">N/A</button>
+            </div>
+            <select required name="2.4" class="status-select hidden">
+              <option value="" disabled selected>Selecione</option>
+              <option value="sim">SIM</option>
+              <option value="nao">NÃO</option>
+              <option value="na">N/A</option>
+            </select>
+            <div class="media-upload bg-blue-50 border-2 border-dashed border-blue-300 rounded-lg p-4" data-media-for="2.4">
+              <label class="block text-sm font-medium text-blue-700 mb-2">📷 Foto obrigatória:</label>
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                multiple
+                required
+                class="media-input w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-600 file:text-white hover:file:bg-blue-700"
+              />
+              <div class="media-preview mt-2 grid grid-cols-2 md:grid-cols-3 gap-2"></div>
+            </div>
+          </div>
+          <div class="inspection-item bg-gray-50 rounded-lg p-4 border border-gray-200" data-item="2.5">
+            <h3 class="font-semibold text-gray-800 mb-3">Traseira amassada</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-danger-500 hover:text-danger-600 transition-all duration-200" data-value="sim" data-field="2.5">SIM</button>
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-success-500 hover:text-success-600 transition-all duration-200" data-value="nao" data-field="2.5">NÃO</button>
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-warning-500 hover:text-warning-600 transition-all duration-200" data-value="na" data-field="2.5">N/A</button>
+            </div>
+            <select required name="2.5" class="status-select hidden">
+              <option value="" disabled selected>Selecione</option>
+              <option value="sim">SIM</option>
+              <option value="nao">NÃO</option>
+              <option value="na">N/A</option>
+            </select>
+            <div class="media-upload bg-blue-50 border-2 border-dashed border-blue-300 rounded-lg p-4" data-media-for="2.5">
+              <label class="block text-sm font-medium text-blue-700 mb-2">📷 Foto obrigatória:</label>
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                multiple
+                required
+                class="media-input w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-600 file:text-white hover:file:bg-blue-700"
+              />
+              <div class="media-preview mt-2 grid grid-cols-2 md:grid-cols-3 gap-2"></div>
+            </div>
+          </div>
+          <div class="navigation-buttons flex justify-between pt-6">
+            <button type="button" class="nav-btn btn-secondary bg-gray-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-600 transition-all duration-200 flex items-center space-x-2" id="btnBackTo1">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+              </svg>
+              <span>Voltar</span>
+            </button>
+            <button
+              type="button"
+              class="nav-btn btn-primary bg-gradient-to-r from-primary-600 to-primary-700 text-white px-6 py-3 rounded-lg font-medium hover:from-primary-700 hover:to-primary-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center space-x-2"
+              id="btnToStep3"
+              disabled
+            >
+              <span>Próxima Seção</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Página 3 - SEÇÃO LATERAL ESQUERDA -->
+      <section class="section bg-white rounded-xl shadow-lg p-6 mb-6 hidden" id="section3">
+        <div class="flex items-center space-x-3 mb-6">
+          <svg class="w-6 h-6 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"></path>
+          </svg>
+          <h2 class="text-xl md:text-2xl font-bold text-gray-800 font-roboto">Seção 3 - Lateral Esquerda</h2>
+        </div>
+        <form id="leftSideForm" novalidate class="space-y-6">
+          <div class="inspection-item bg-gray-50 rounded-lg p-4 border border-gray-200" data-item="3.1">
+            <h3 class="font-semibold text-gray-800 mb-3">Lanternas queimadas</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-danger-500 hover:text-danger-600 transition-all duration-200" data-value="sim" data-field="3.1">SIM</button>
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-success-500 hover:text-success-600 transition-all duration-200" data-value="nao" data-field="3.1">NÃO</button>
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-warning-500 hover:text-warning-600 transition-all duration-200" data-value="na" data-field="3.1">N/A</button>
+            </div>
+            <select required name="3.1" class="status-select hidden">
+              <option value="" disabled selected>Selecione</option>
+              <option value="sim">SIM</option>
+              <option value="nao">NÃO</option>
+              <option value="na">N/A</option>
+            </select>
+            <div class="media-upload bg-blue-50 border-2 border-dashed border-blue-300 rounded-lg p-4" data-media-for="3.1">
+              <label class="block text-sm font-medium text-blue-700 mb-2">📷 Foto obrigatória:</label>
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                multiple
+                required
+                class="media-input w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-600 file:text-white hover:file:bg-blue-700"
+              />
+              <div class="media-preview mt-2 grid grid-cols-2 md:grid-cols-3 gap-2"></div>
+            </div>
+          </div>
+
+          <div class="inspection-item bg-gray-50 rounded-lg p-4 border border-gray-200" data-item="3.5">
+            <h3 class="font-semibold text-gray-800 mb-3">Quantidade de catracas fixas</h3>
+            <input
+              type="number"
+              name="3.5"
+              class="numeric-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 mb-4"
+              min="0"
+              required
+              placeholder="Digite o número"
+            />
+            <div class="media-upload bg-blue-50 border-2 border-dashed border-blue-300 rounded-lg p-4" data-media-for="3.5">
+              <label class="block text-sm font-medium text-blue-700 mb-2">📷 Foto obrigatória:</label>
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                multiple
+                required
+                class="media-input w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-600 file:text-white hover:file:bg-blue-700"
+              />
+              <div class="media-preview mt-2 grid grid-cols-2 md:grid-cols-3 gap-2"></div>
+            </div>
+          </div>
+
+          <div class="inspection-item bg-gray-50 rounded-lg p-4 border border-gray-200" data-item="3.13">
+            <h3 class="font-semibold text-gray-800 mb-3">Quantidade de rabichos lado esquerdo</h3>
+            <input
+              type="number"
+              name="3.13"
+              class="numeric-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 mb-4"
+              min="0"
+              required
+              placeholder="Digite o número"
+            />
+            <div class="media-upload bg-blue-50 border-2 border-dashed border-blue-300 rounded-lg p-4" data-media-for="3.13">
+              <label class="block text-sm font-medium text-blue-700 mb-2">📷 Foto obrigatória:</label>
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                multiple
+                required
+                class="media-input w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-600 file:text-white hover:file:bg-blue-700"
+              />
+              <div class="media-preview mt-2 grid grid-cols-2 md:grid-cols-3 gap-2"></div>
+            </div>
+          </div>
+
+          <div class="navigation-buttons flex justify-between pt-6">
+            <button type="button" class="nav-btn btn-secondary bg-gray-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-600 transition-all duration-200 flex items-center space-x-2" id="btnBackTo2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+              </svg>
+              <span>Voltar</span>
+            </button>
+            <button
+              type="button"
+              class="nav-btn btn-primary bg-gradient-to-r from-primary-600 to-primary-700 text-white px-6 py-3 rounded-lg font-medium hover:from-primary-700 hover:to-primary-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center space-x-2"
+              id="btnToStep4"
+              disabled
+            >
+              <span>Próxima Seção</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Página 4 - SEÇÃO LATERAL DIREITA -->
+      <section class="section bg-white rounded-xl shadow-lg p-6 mb-6 hidden" id="section4">
+        <div class="flex items-center space-x-3 mb-6">
+          <svg class="w-6 h-6 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"></path>
+          </svg>
+          <h2 class="text-xl md:text-2xl font-bold text-gray-800 font-roboto">Seção 4 - Lateral Direita</h2>
+        </div>
+        <form id="rightSideForm" novalidate class="space-y-6">
+          <div class="inspection-item bg-gray-50 rounded-lg p-4 border border-gray-200" data-item="4.1">
+            <h3 class="font-semibold text-gray-800 mb-3">Lanternas queimadas</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-danger-500 hover:text-danger-600 transition-all duration-200" data-value="sim" data-field="4.1">SIM</button>
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-success-500 hover:text-success-600 transition-all duration-200" data-value="nao" data-field="4.1">NÃO</button>
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-warning-500 hover:text-warning-600 transition-all duration-200" data-value="na" data-field="4.1">N/A</button>
+            </div>
+            <select required name="4.1" class="status-select hidden">
+              <option value="" disabled selected>Selecione</option>
+              <option value="sim">SIM</option>
+              <option value="nao">NÃO</option>
+              <option value="na">N/A</option>
+            </select>
+            <div class="media-upload bg-blue-50 border-2 border-dashed border-blue-300 rounded-lg p-4" data-media-for="4.1">
+              <label class="block text-sm font-medium text-blue-700 mb-2">📷 Foto obrigatória:</label>
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                multiple
+                required
+                class="media-input w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-600 file:text-white hover:file:bg-blue-700"
+              />
+              <div class="media-preview mt-2 grid grid-cols-2 md:grid-cols-3 gap-2"></div>
+            </div>
+          </div>
+
+          <div class="inspection-item bg-gray-50 rounded-lg p-4 border border-gray-200" data-item="4.5">
+            <h3 class="font-semibold text-gray-800 mb-3">Quantidade de catracas fixas</h3>
+            <input
+              type="number"
+              name="4.5"
+              class="numeric-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 mb-4"
+              min="0"
+              required
+              placeholder="Digite o número"
+            />
+            <div class="media-upload bg-blue-50 border-2 border-dashed border-blue-300 rounded-lg p-4" data-media-for="4.5">
+              <label class="block text-sm font-medium text-blue-700 mb-2">📷 Foto obrigatória:</label>
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                multiple
+                required
+                class="media-input w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-600 file:text-white hover:file:bg-blue-700"
+              />
+              <div class="media-preview mt-2 grid grid-cols-2 md:grid-cols-3 gap-2"></div>
+            </div>
+          </div>
+
+          <div class="inspection-item bg-gray-50 rounded-lg p-4 border border-gray-200" data-item="4.13">
+            <h3 class="font-semibold text-gray-800 mb-3">Quantidade de rabichos lado direito</h3>
+            <input
+              type="number"
+              name="4.13"
+              class="numeric-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 mb-4"
+              min="0"
+              required
+              placeholder="Digite o número"
+            />
+            <div class="media-upload bg-blue-50 border-2 border-dashed border-blue-300 rounded-lg p-4" data-media-for="4.13">
+              <label class="block text-sm font-medium text-blue-700 mb-2">📷 Foto obrigatória:</label>
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                multiple
+                required
+                class="media-input w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-600 file:text-white hover:file:bg-blue-700"
+              />
+              <div class="media-preview mt-2 grid grid-cols-2 md:grid-cols-3 gap-2"></div>
+            </div>
+          </div>
+
+          <div class="navigation-buttons flex justify-between pt-6">
+            <button type="button" class="nav-btn btn-secondary bg-gray-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-600 transition-all duration-200 flex items-center space-x-2" id="btnBackTo3">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+              </svg>
+              <span>Voltar</span>
+            </button>
+            <button
+              type="button"
+              class="nav-btn btn-primary bg-gradient-to-r from-primary-600 to-primary-700 text-white px-6 py-3 rounded-lg font-medium hover:from-primary-700 hover:to-primary-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center space-x-2"
+              id="btnToStep5"
+              disabled
+            >
+              <span>Próxima Seção</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Página 5 - SEÇÃO INTERNA -->
+      <section class="section bg-white rounded-xl shadow-lg p-6 mb-6 hidden" id="section5">
+        <div class="flex items-center space-x-3 mb-6">
+          <svg class="w-6 h-6 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"></path>
+          </svg>
+          <h2 class="text-xl md:text-2xl font-bold text-gray-800 font-roboto">Seção 5 - Interna</h2>
+        </div>
+        <form id="internalForm" novalidate class="space-y-6">
+          <div class="inspection-item bg-gray-50 rounded-lg p-4 border border-gray-200" data-item="5.1">
+            <h3 class="font-semibold text-gray-800 mb-3">Assoalho em boas condições</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-danger-500 hover:text-danger-600 transition-all duration-200" data-value="sim" data-field="5.1">SIM</button>
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-success-500 hover:text-success-600 transition-all duration-200" data-value="nao" data-field="5.1">NÃO</button>
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-warning-500 hover:text-warning-600 transition-all duration-200" data-value="na" data-field="5.1">N/A</button>
+            </div>
+            <select required name="5.1" class="status-select hidden">
+              <option value="" disabled selected>Selecione</option>
+              <option value="sim">SIM</option>
+              <option value="nao">NÃO</option>
+              <option value="na">N/A</option>
+            </select>
+            <div class="media-upload bg-blue-50 border-2 border-dashed border-blue-300 rounded-lg p-4" data-media-for="5.1">
+              <label class="block text-sm font-medium text-blue-700 mb-2">📷 Foto obrigatória:</label>
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                multiple
+                required
+                class="media-input w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-600 file:text-white hover:file:bg-blue-700"
+              />
+              <div class="media-preview mt-2 grid grid-cols-2 md:grid-cols-3 gap-2"></div>
+            </div>
+          </div>
+
+          <div class="navigation-buttons flex justify-between pt-6">
+            <button type="button" class="nav-btn btn-secondary bg-gray-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-600 transition-all duration-200 flex items-center space-x-2" id="btnBackTo4">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+              </svg>
+              <span>Voltar</span>
+            </button>
+            <button
+              type="button"
+              class="nav-btn btn-primary bg-gradient-to-r from-primary-600 to-primary-700 text-white px-6 py-3 rounded-lg font-medium hover:from-primary-700 hover:to-primary-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center space-x-2"
+              id="btnToStep6"
+              disabled
+            >
+              <span>Próxima Seção</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Página 6 - SEÇÃO EQUIPAMENTOS -->
+      <section class="section bg-white rounded-xl shadow-lg p-6 mb-6 hidden" id="section6">
+        <div class="flex items-center space-x-3 mb-6">
+          <svg class="w-6 h-6 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <h2 class="text-xl md:text-2xl font-bold text-gray-800 font-roboto">Seção 6 - Equipamentos</h2>
+        </div>
+        <form id="equipmentForm" novalidate class="space-y-6">
+          <div class="inspection-item bg-gray-50 rounded-lg p-4 border border-gray-200" data-item="6.1">
+            <h3 class="font-semibold text-gray-800 mb-3">Equipamentos em boas condições</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-danger-500 hover:text-danger-600 transition-all duration-200" data-value="sim" data-field="6.1">SIM</button>
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-success-500 hover:text-success-600 transition-all duration-200" data-value="nao" data-field="6.1">NÃO</button>
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-warning-500 hover:text-warning-600 transition-all duration-200" data-value="na" data-field="6.1">N/A</button>
+            </div>
+            <select required name="6.1" class="status-select hidden">
+              <option value="" disabled selected>Selecione</option>
+              <option value="sim">SIM</option>
+              <option value="nao">NÃO</option>
+              <option value="na">N/A</option>
+            </select>
+            <div class="media-upload bg-blue-50 border-2 border-dashed border-blue-300 rounded-lg p-4" data-media-for="6.1">
+              <label class="block text-sm font-medium text-blue-700 mb-2">📷 Foto obrigatória:</label>
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                multiple
+                required
+                class="media-input w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-600 file:text-white hover:file:bg-blue-700"
+              />
+              <div class="media-preview mt-2 grid grid-cols-2 md:grid-cols-3 gap-2"></div>
+            </div>
+          </div>
+
+          <div class="navigation-buttons flex justify-between pt-6">
+            <button type="button" class="nav-btn btn-secondary bg-gray-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-600 transition-all duration-200 flex items-center space-x-2" id="btnBackTo5">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+              </svg>
+              <span>Voltar</span>
+            </button>
+            <button
+              type="button"
+              class="nav-btn btn-primary bg-gradient-to-r from-primary-600 to-primary-700 text-white px-6 py-3 rounded-lg font-medium hover:from-primary-700 hover:to-primary-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center space-x-2"
+              id="btnToStep7"
+              disabled
+            >
+              <span>Próxima Seção</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Página 7 - INSPEÇÃO DE PNEUS PRIMEIRO EIXO -->
+      <section class="section bg-white rounded-xl shadow-lg p-6 mb-6 hidden" id="section7">
+        <div class="flex items-center space-x-3 mb-6">
+          <svg class="w-6 h-6 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"></path>
+          </svg>
+          <h2 class="text-xl md:text-2xl font-bold text-gray-800 font-roboto">Inspeção de Pneus - 1º Eixo</h2>
+        </div>
+        <form id="firstAxisForm" novalidate class="space-y-6">
+          <div class="inspection-item bg-gray-50 rounded-lg p-4 border border-gray-200" data-item="7.1">
+            <h3 class="font-semibold text-gray-800 mb-3">Estado dos pneus - 1º Eixo</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-danger-500 hover:text-danger-600 transition-all duration-200" data-value="sim" data-field="7.1">SIM</button>
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-success-500 hover:text-success-600 transition-all duration-200" data-value="nao" data-field="7.1">NÃO</button>
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-warning-500 hover:text-warning-600 transition-all duration-200" data-value="na" data-field="7.1">N/A</button>
+            </div>
+            <select required name="7.1" class="status-select hidden">
+              <option value="" disabled selected>Selecione</option>
+              <option value="sim">SIM</option>
+              <option value="nao">NÃO</option>
+              <option value="na">N/A</option>
+            </select>
+            <div class="media-upload bg-blue-50 border-2 border-dashed border-blue-300 rounded-lg p-4" data-media-for="7.1">
+              <label class="block text-sm font-medium text-blue-700 mb-2">📷 Foto obrigatória:</label>
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                multiple
+                required
+                class="media-input w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-600 file:text-white hover:file:bg-blue-700"
+              />
+              <div class="media-preview mt-2 grid grid-cols-2 md:grid-cols-3 gap-2"></div>
+            </div>
+          </div>
+
+          <div class="navigation-buttons flex justify-between pt-6">
+            <button type="button" class="nav-btn btn-secondary bg-gray-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-600 transition-all duration-200 flex items-center space-x-2" id="btnBackTo6">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+              </svg>
+              <span>Voltar</span>
+            </button>
+            <button
+              type="button"
+              class="nav-btn btn-primary bg-gradient-to-r from-primary-600 to-primary-700 text-white px-6 py-3 rounded-lg font-medium hover:from-primary-700 hover:to-primary-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center space-x-2"
+              id="btnToStep8"
+              disabled
+            >
+              <span>Próxima Seção</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Página 8 - INSPEÇÃO DE PNEUS SEGUNDO EIXO -->
+      <section class="section bg-white rounded-xl shadow-lg p-6 mb-6 hidden" id="section8">
+        <div class="flex items-center space-x-3 mb-6">
+          <svg class="w-6 h-6 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"></path>
+          </svg>
+          <h2 class="text-xl md:text-2xl font-bold text-gray-800 font-roboto">Inspeção de Pneus - 2º Eixo</h2>
+        </div>
+        <form id="secondAxisForm" novalidate class="space-y-6">
+          <div class="inspection-item bg-gray-50 rounded-lg p-4 border border-gray-200" data-item="8.1">
+            <h3 class="font-semibold text-gray-800 mb-3">Estado dos pneus - 2º Eixo</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-danger-500 hover:text-danger-600 transition-all duration-200" data-value="sim" data-field="8.1">SIM</button>
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-success-500 hover:text-success-600 transition-all duration-200" data-value="nao" data-field="8.1">NÃO</button>
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-warning-500 hover:text-warning-600 transition-all duration-200" data-value="na" data-field="8.1">N/A</button>
+            </div>
+            <select required name="8.1" class="status-select hidden">
+              <option value="" disabled selected>Selecione</option>
+              <option value="sim">SIM</option>
+              <option value="nao">NÃO</option>
+              <option value="na">N/A</option>
+            </select>
+            <div class="media-upload bg-blue-50 border-2 border-dashed border-blue-300 rounded-lg p-4" data-media-for="8.1">
+              <label class="block text-sm font-medium text-blue-700 mb-2">📷 Foto obrigatória:</label>
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                multiple
+                required
+                class="media-input w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-600 file:text-white hover:file:bg-blue-700"
+              />
+              <div class="media-preview mt-2 grid grid-cols-2 md:grid-cols-3 gap-2"></div>
+            </div>
+          </div>
+
+          <div class="navigation-buttons flex justify-between pt-6">
+            <button type="button" class="nav-btn btn-secondary bg-gray-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-600 transition-all duration-200 flex items-center space-x-2" id="btnBackTo7">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+              </svg>
+              <span>Voltar</span>
+            </button>
+            <button
+              type="button"
+              class="nav-btn btn-primary bg-gradient-to-r from-primary-600 to-primary-700 text-white px-6 py-3 rounded-lg font-medium hover:from-primary-700 hover:to-primary-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center space-x-2"
+              id="btnToStep9"
+              disabled
+            >
+              <span>Próxima Seção</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Página 9 - INSPEÇÃO DE PNEUS TERCEIRO EIXO -->
+      <section class="section bg-white rounded-xl shadow-lg p-6 mb-6 hidden" id="section9">
+        <div class="flex items-center space-x-3 mb-6">
+          <svg class="w-6 h-6 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"></path>
+          </svg>
+          <h2 class="text-xl md:text-2xl font-bold text-gray-800 font-roboto">Inspeção de Pneus - 3º Eixo</h2>
+        </div>
+        <form id="thirdAxisForm" novalidate class="space-y-6">
+          <div class="inspection-item bg-gray-50 rounded-lg p-4 border border-gray-200" data-item="9.1">
+            <h3 class="font-semibold text-gray-800 mb-3">Estado dos pneus - 3º Eixo</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-danger-500 hover:text-danger-600 transition-all duration-200" data-value="sim" data-field="9.1">SIM</button>
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-success-500 hover:text-success-600 transition-all duration-200" data-value="nao" data-field="9.1">NÃO</button>
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-warning-500 hover:text-warning-600 transition-all duration-200" data-value="na" data-field="9.1">N/A</button>
+            </div>
+            <select required name="9.1" class="status-select hidden">
+              <option value="" disabled selected>Selecione</option>
+              <option value="sim">SIM</option>
+              <option value="nao">NÃO</option>
+              <option value="na">N/A</option>
+            </select>
+            <div class="media-upload bg-blue-50 border-2 border-dashed border-blue-300 rounded-lg p-4" data-media-for="9.1">
+              <label class="block text-sm font-medium text-blue-700 mb-2">📷 Foto obrigatória:</label>
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                multiple
+                required
+                class="media-input w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-600 file:text-white hover:file:bg-blue-700"
+              />
+              <div class="media-preview mt-2 grid grid-cols-2 md:grid-cols-3 gap-2"></div>
+            </div>
+          </div>
+
+          <div class="navigation-buttons flex justify-between pt-6">
+            <button type="button" class="nav-btn btn-secondary bg-gray-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-600 transition-all duration-200 flex items-center space-x-2" id="btnBackTo8">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+              </svg>
+              <span>Voltar</span>
+            </button>
+            <button
+              type="button"
+              class="nav-btn btn-primary bg-gradient-to-r from-primary-600 to-primary-700 text-white px-6 py-3 rounded-lg font-medium hover:from-primary-700 hover:to-primary-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center space-x-2"
+              id="btnToStep10"
+              disabled
+            >
+              <span>Próxima Seção</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Página 10 - INSPEÇÃO DE PNEUS QUARTO EIXO -->
+      <section class="section bg-white rounded-xl shadow-lg p-6 mb-6 hidden" id="section10">
+        <div class="flex items-center space-x-3 mb-6">
+          <svg class="w-6 h-6 text-primary-600" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"></path>
+          </svg>
+          <h2 class="text-xl md:text-2xl font-bold text-gray-800 font-roboto">Inspeção de Pneus - 4º Eixo</h2>
+        </div>
+        <form id="fourthAxisForm" novalidate class="space-y-6">
+          <div class="inspection-item bg-gray-50 rounded-lg p-4 border border-gray-200" data-item="10.1">
+            <h3 class="font-semibold text-gray-800 mb-3">Estado dos pneus - 4º Eixo</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-danger-500 hover:text-danger-600 transition-all duration-200" data-value="sim" data-field="10.1">SIM</button>
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-success-500 hover:text-success-600 transition-all duration-200" data-value="nao" data-field="10.1">NÃO</button>
+              <button type="button" class="status-btn bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:border-warning-500 hover:text-warning-600 transition-all duration-200" data-value="na" data-field="10.1">N/A</button>
+            </div>
+            <select required name="10.1" class="status-select hidden">
+              <option value="" disabled selected>Selecione</option>
+              <option value="sim">SIM</option>
+              <option value="nao">NÃO</option>
+              <option value="na">N/A</option>
+            </select>
+            <div class="media-upload bg-blue-50 border-2 border-dashed border-blue-300 rounded-lg p-4" data-media-for="10.1">
+              <label class="block text-sm font-medium text-blue-700 mb-2">📷 Foto obrigatória:</label>
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                multiple
+                required
+                class="media-input w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-600 file:text-white hover:file:bg-blue-700"
+              />
+              <div class="media-preview mt-2 grid grid-cols-2 md:grid-cols-3 gap-2"></div>
+            </div>
+          </div>
+
+          <div class="navigation-buttons flex justify-between pt-6">
+            <button type="button" class="nav-btn btn-secondary bg-gray-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-600 transition-all duration-200 flex items-center space-x-2" id="btnBackTo9">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+              </svg>
+              <span>Voltar</span>
+            </button>
+            <button
+              type="button"
+              class="nav-btn btn-primary bg-gradient-to-r from-success-600 to-success-700 text-white px-6 py-3 rounded-lg font-medium hover:from-success-700 hover:to-success-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center space-x-2"
+              id="btnToStep11"
+              disabled
+            >
+              <span>Finalizar</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Página 11 - Finalização -->
+      <section class="section bg-white rounded-xl shadow-lg p-6 mb-6 hidden" id="section11">
+        <div class="flex items-center space-x-3 mb-6">
+          <svg class="w-6 h-6 text-success-600" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+          </svg>
+          <h2 class="text-xl md:text-2xl font-bold text-gray-800 font-roboto">Finalização do Checklist</h2>
+        </div>
+        <form id="finalizationForm" novalidate class="space-y-6">
+          <div id="finalSummary" class="bg-blue-50 rounded-lg p-4 border border-blue-200">
+            <!-- Resumo será preenchido via JS -->
+          </div>
+          
+          <div class="form-group space-y-2">
+            <label for="finalOdometer" class="block text-sm font-medium text-gray-700">Quilometragem Final *</label>
+            <input
+              type="number"
+              id="finalOdometer"
+              required
+              min="0"
+              placeholder="Digite a quilometragem final"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
+            />
+            <span class="error-message text-sm text-danger-600 hidden" id="finalOdometerError"
+              >Número válido obrigatório</span
+            >
+          </div>
+          
+          <div class="form-group space-y-2">
+            <label for="finalObservations" class="block text-sm font-medium text-gray-700">Observações Finais</label>
+            <textarea
+              id="finalObservations"
+              placeholder="Observações finais do inspetor"
+              rows="4"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 resize-none"
+            ></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label class="flex items-center space-x-3 cursor-pointer">
+              <input type="checkbox" id="supervisorConfirmation" required class="w-5 h-5 text-primary-600 border-gray-300 rounded focus:ring-primary-500" />
+              <span class="text-sm font-medium text-gray-700">Confirmação do supervisor *</span>
+            </label>
+            <span class="error-message text-sm text-danger-600 hidden" id="supervisorConfirmationError"
+              >Confirmação obrigatória</span
+            >
+          </div>
+          
+          <div class="navigation-buttons flex justify-between pt-6">
+            <button
+              type="button"
+              class="nav-btn btn-secondary bg-gray-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-600 transition-all duration-200 flex items-center space-x-2"
+              id="btnBackTo10"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+              </svg>
+              <span>Voltar</span>
+            </button>
+            <button
+              type="submit"
+              class="nav-btn btn-success bg-gradient-to-r from-success-600 to-success-700 text-white px-8 py-3 rounded-lg font-medium hover:from-success-700 hover:to-success-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center space-x-2"
+              id="submitBtn"
+              disabled
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span>Finalizar Checklist</span>
+            </button>
+          </div>
+        </form>
+      </section>
+    </div>
+
+    <!-- Script -->
+    <script src="manutencao.js"></script>
+  </body>
+</html>
