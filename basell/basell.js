@@ -46,18 +46,56 @@ const AppState = {
 // ========================================
 document.addEventListener("DOMContentLoaded", function () {
   console.log("🚀 Sistema BASELL iniciado");
+  console.log("🔍 [DEBUG] AppState ANTES de carregar localStorage:", JSON.stringify(AppState.checklistData.step1Items, null, 2));
 
-  // Carregar dados salvos do localStorage
-  loadChecklistDataFromJSON();
+  // CORREÇÃO: Limpar dados antigos do localStorage para evitar interferência
+  clearOldChecklistData();
+  
+  // Garantir que step1Items inicie vazio
+  AppState.checklistData.step1Items = {};
+  console.log("🔍 [DEBUG] AppState APÓS limpeza:", JSON.stringify(AppState.checklistData.step1Items, null, 2));
 
   initializeApp();
 });
 
+// Função para limpar dados antigos do localStorage
+function clearOldChecklistData() {
+  console.log("🧹 [DEBUG] Limpando dados antigos do localStorage...");
+  localStorage.removeItem("basell_checklist_json");
+  localStorage.removeItem("basell_current_checklist_id");
+  console.log("✅ [DEBUG] localStorage limpo");
+}
+
+// Função para adicionar botão de limpeza (para debug)
+function addClearDataButton() {
+  const header = document.querySelector(".bg-white.rounded-xl.shadow-lg.p-6.mb-6");
+  if (header && !document.getElementById("clearDataBtn")) {
+    const clearBtn = document.createElement("button");
+    clearBtn.id = "clearDataBtn";
+    clearBtn.className = "ml-4 px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600";
+    clearBtn.textContent = "🧹 Limpar Dados";
+    clearBtn.onclick = function() {
+      clearOldChecklistData();
+      AppState.checklistData.step1Items = {};
+      location.reload();
+    };
+    header.appendChild(clearBtn);
+  }
+}
+
 function initializeApp() {
   try {
+    console.log("🚀 [DEBUG] Inicializando aplicação...");
+    console.log("🔍 [DEBUG] AppState inicial:", JSON.stringify(AppState, null, 2));
+    
     setupCurrentDate();
     setupFormValidation();
     setupEventListeners();
+    addClearDataButton(); // Adicionar botão de limpeza
+    
+    console.log("🔍 [DEBUG] Event listeners configurados");
+    console.log("🔍 [DEBUG] Botões encontrados:", document.querySelectorAll(".status-btn").length);
+    
     showNotification("Sistema carregado com sucesso!", "success");
   } catch (error) {
     console.error("❌ Erro na inicialização:", error);
@@ -171,9 +209,23 @@ function formatPlaca(event) {
 // GERENCIAMENTO DE EVENTOS
 // ========================================
 function setupEventListeners() {
-  // Botões de status dos itens (Etapa 1)
-  document.querySelectorAll(".status-btn").forEach((btn) => {
-    btn.addEventListener("click", handleItemSelection);
+  console.log("🔍 [DEBUG] Configurando event listeners...");
+  
+  // Remover todos os event listeners existentes dos botões de status
+  const statusButtons = document.querySelectorAll(".status-btn");
+  console.log("🔍 [DEBUG] Botões de status encontrados:", statusButtons.length);
+  
+  statusButtons.forEach((btn, index) => {
+    // Remover listeners anteriores (incluindo do basell-redirect.js)
+    const newBtn = btn.cloneNode(true);
+    btn.parentNode.replaceChild(newBtn, btn);
+    
+    console.log(`🔍 [DEBUG] Configurando listener para botão ${index + 1}:`, {
+      item: newBtn.dataset.item,
+      status: newBtn.dataset.status,
+      classes: newBtn.className
+    });
+    newBtn.addEventListener("click", handleItemSelection);
   });
 
   // Botões de mídia (Etapa 2)
@@ -190,14 +242,53 @@ function setupEventListeners() {
   if (finalConfirmation) {
     finalConfirmation.addEventListener("change", updateFinalizeButton);
   }
+  
+  console.log("✅ [DEBUG] Event listeners configurados com sucesso");
+}
+
+// Função específica para configurar event listeners da Etapa 1
+function setupStep1EventListeners() {
+  console.log("🔍 [DEBUG] Configurando event listeners específicos da Etapa 1...");
+  
+  const statusButtons = document.querySelectorAll(".status-btn");
+  console.log("🔍 [DEBUG] Botões de status encontrados na Etapa 1:", statusButtons.length);
+  
+  statusButtons.forEach((btn, index) => {
+    // Remover listener anterior se existir
+    btn.removeEventListener("click", handleItemSelection);
+    
+    console.log(`🔍 [DEBUG] Configurando listener para botão ${index + 1}:`, {
+      item: btn.dataset.item,
+      status: btn.dataset.status,
+      classes: btn.className
+    });
+    
+    btn.addEventListener("click", handleItemSelection);
+  });
+  
+  console.log("✅ [DEBUG] Event listeners da Etapa 1 configurados com sucesso");
 }
 
 function handleItemSelection(event) {
+  console.log("🔍 [DEBUG] === INÍCIO handleItemSelection ===");
+  console.log("🔍 [DEBUG] Event recebido:", event);
+  console.log("🔍 [DEBUG] Event target:", event.target);
+  
   const btn = event.target.closest(".status-btn");
-  if (!btn) return;
+  if (!btn) {
+    console.log("❌ [DEBUG] Botão .status-btn não encontrado!");
+    console.log("❌ [DEBUG] Event target classes:", event.target.className);
+    return;
+  }
 
   const item = btn.dataset.item;
   const status = btn.dataset.status;
+  
+  console.log("🔍 [DEBUG] Botão encontrado:", btn);
+  console.log("🔍 [DEBUG] Item:", item, "Status:", status);
+  console.log("🔍 [DEBUG] Dataset completo:", btn.dataset);
+  console.log("🔍 [DEBUG] AppState ANTES da alteração:", JSON.stringify(AppState.checklistData.step1Items, null, 2));
+  console.log("🔍 [DEBUG] Quantidade de itens no AppState:", Object.keys(AppState.checklistData.step1Items).length);
 
   // Remover seleção anterior
   const container = btn.closest(".verification-item");
@@ -234,14 +325,23 @@ function handleItemSelection(event) {
       ? "Não conforme"
       : "Não aplicável";
 
+  console.log("🔍 [DEBUG] Status convertido para DB:", dbStatus);
+
   // Salvar no estado com o valor convertido
   AppState.checklistData.step1Items[item] = dbStatus;
+  
+  console.log("🔍 [DEBUG] AppState APÓS alteração:", JSON.stringify(AppState.checklistData.step1Items, null, 2));
+  console.log("🔍 [DEBUG] Item específico salvo:", AppState.checklistData.step1Items[item]);
+  console.log("🔍 [DEBUG] Total de itens salvos agora:", Object.keys(AppState.checklistData.step1Items).length);
 
   // Salvar dados como JSON no localStorage
-  saveChecklistDataAsJSON();
+  const saveResult = saveChecklistDataAsJSON();
+  console.log("🔍 [DEBUG] Resultado do salvamento JSON:", saveResult);
 
   // Verificar se pode avançar para próxima etapa
+  console.log("🔍 [DEBUG] Chamando checkStep1Completion()...");
   checkStep1Completion();
+  console.log("🔍 [DEBUG] === FIM handleItemSelection ===");
 }
 
 function setupMediaButtons() {
@@ -283,21 +383,21 @@ function saveChecklistDataAsJSON() {
   }
 }
 
-// Carregar dados do checklist do localStorage
+// Carregar dados do checklist do localStorage (CORRIGIDO)
 function loadChecklistDataFromJSON() {
   try {
     const savedData = localStorage.getItem("basell_checklist_json");
     if (savedData) {
       const checklistJSON = JSON.parse(savedData);
 
-      // Restaurar dados no AppState
+      // CORREÇÃO: Só restaurar basicInfo, NÃO step1Items para evitar dados antigos
       AppState.checklistData.basicInfo = checklistJSON.basicInfo || {};
-      AppState.checklistData.step1Items = checklistJSON.step1Items || {};
+      // AppState.checklistData.step1Items = checklistJSON.step1Items || {}; // REMOVIDO
       AppState.checklistData.step2Items = checklistJSON.step2Items || {};
       AppState.checklistData.observations = checklistJSON.observations || {};
       AppState.checklistData.mediaFiles = checklistJSON.mediaFiles || [];
 
-      console.log("✅ Dados carregados do JSON localStorage:", checklistJSON);
+      console.log("✅ Dados básicos carregados (step1Items mantido vazio):", checklistJSON);
       return checklistJSON;
     }
   } catch (error) {
@@ -322,6 +422,10 @@ async function saveChecklistToDatabase(status = "nao_terminou") {
     console.log(
       "🔍 [DEBUG] localStorage basell_checklist_json:",
       localStorage.getItem("basell_checklist_json")
+    );
+    console.log(
+      "🔍 [DEBUG] AppState completo:",
+      JSON.stringify(AppState.checklistData, null, 2)
     );
 
     // Preparar dados com mapeamento correto para as colunas da tabela
@@ -466,21 +570,39 @@ async function saveBasicInfo() {
 }
 
 function checkStep1Completion() {
+  console.log("🔍 [DEBUG] === INICIANDO VALIDAÇÃO DA ETAPA 1 ===");
+  
   // Verificar se TODAS as 9 perguntas específicas foram respondidas
   const requiredItems = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
   let allAnswered = true;
+  let answeredCount = 0;
+  
+  console.log("🔍 [DEBUG] Itens obrigatórios:", requiredItems);
+  console.log("🔍 [DEBUG] AppState.checklistData.step1Items completo:", JSON.stringify(AppState.checklistData.step1Items, null, 2));
   
   // Verificar se cada item obrigatório foi respondido
   for (const itemId of requiredItems) {
-    if (!AppState.checklistData.step1Items[itemId]) {
+    const itemValue = AppState.checklistData.step1Items[itemId];
+    console.log(`🔍 [DEBUG] Verificando item ${itemId}: valor = "${itemValue}", existe = ${!!itemValue}`);
+    
+    if (!itemValue) {
       allAnswered = false;
-      break;
+      console.log(`❌ [DEBUG] Item ${itemId} NÃO respondido`);
+    } else {
+      answeredCount++;
+      console.log(`✅ [DEBUG] Item ${itemId} respondido com: "${itemValue}"`);
     }
   }
   
+  console.log(`🔍 [DEBUG] Resultado da validação: ${answeredCount}/9 itens respondidos`);
+  console.log(`🔍 [DEBUG] allAnswered = ${allAnswered}`);
+  
   const nextStepBtn = document.getElementById('nextToStep2');
+  console.log(`🔍 [DEBUG] Botão nextToStep2 encontrado: ${!!nextStepBtn}`);
   
   if (allAnswered) {
+    console.log("✅ [DEBUG] TODOS OS ITENS RESPONDIDOS - HABILITANDO PRÓXIMA ETAPA");
+    
     // Criar botão para próxima etapa se não existir
     createNextStepButton();
     
@@ -496,15 +618,25 @@ function checkStep1Completion() {
       "success"
     );
   } else {
+    console.log(`❌ [DEBUG] ETAPA INCOMPLETA - Faltam ${9 - answeredCount} itens`);
+    
     // Desabilitar botão se não todas as perguntas foram respondidas
     if (nextStepBtn) {
       nextStepBtn.disabled = true;
       nextStepBtn.classList.add('opacity-50', 'cursor-not-allowed');
       nextStepBtn.classList.remove('hover:bg-blue-700');
     }
+    
+    if (answeredCount > 0) {
+      showNotification(
+        `Etapa 1 incompleta! Faltam ${9 - answeredCount} itens para completar.`,
+        "warning"
+      );
+    }
   }
   
-  console.log(`🔍 Validação Etapa 1: ${requiredItems.filter(id => AppState.checklistData.step1Items[id]).length}/9 perguntas respondidas`);
+  console.log(`🔍 [DEBUG] === FIM DA VALIDAÇÃO DA ETAPA 1 ===`);
+  console.log(`🔍 Validação Etapa 1: ${answeredCount}/9 perguntas respondidas (${allAnswered ? 'COMPLETO' : 'INCOMPLETO'})`);
 }
 
 function createNextStepButton() {
@@ -617,6 +749,14 @@ function showStep(step) {
   if (targetSection) {
     targetSection.style.display = "block";
     targetSection.scrollIntoView({ behavior: "smooth" });
+    
+    // Reconfigurar event listeners quando a Etapa 1 for mostrada
+    if (step === "step1") {
+      console.log("🔍 [DEBUG] Reconfigurando event listeners para Etapa 1...");
+      setTimeout(() => {
+        setupStep1EventListeners();
+      }, 100); // Pequeno delay para garantir que o DOM esteja atualizado
+    }
   }
 
   AppState.currentStep = step;

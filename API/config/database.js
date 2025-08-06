@@ -7,7 +7,7 @@ const sequelize = new Sequelize({
   host: process.env.DB_HOST || "localhost",
   port: process.env.DB_PORT || 5432,
   database: process.env.DB_NAME || "checklist_db",
-  username: process.env.DB_USER || "checklist_user",
+  username: process.env.DB_USER || "postgres",
   password: process.env.DB_PASSWORD || "megavale",
   logging: console.log, // Para debug - pode ser removido em produção
   pool: {

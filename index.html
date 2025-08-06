@@ -33,9 +33,8 @@
         },
       };
     </script>
-    <!-- jsPDF Library -->
+    <!-- Script para geração de PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <!-- PDF Basell Generator -->
     <script src="pdf/pdfBasell.js"></script>
     <title>Sistema de Checklist Digital</title>
   </head>
@@ -124,6 +123,22 @@
                   Últimos Registros
                 </h3>
               </div>
+              
+              <!-- Mensagens de Status -->
+              <div id="loading-message" class="px-6 py-4 text-center text-gray-500" style="display: none;">
+                <div class="flex items-center justify-center">
+                  <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Carregando dados...
+                </div>
+              </div>
+              
+              <div id="error-message" class="px-6 py-4 text-center text-red-500" style="display: none;">
+                Erro ao carregar dados
+              </div>
+              
               <div class="overflow-x-auto">
                 <table class="w-full">
                   <thead class="bg-gray-50">
@@ -155,189 +170,8 @@
                       </th>
                     </tr>
                   </thead>
-                  <tbody class="bg-white divide-y divide-gray-200">
-                    <tr class="hover:bg-gray-50 transition-colors">
-                      <td
-                        class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
-                      >
-                        João da Silva
-                      </td>
-                      <td
-                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono"
-                      >
-                        ABC-1234
-                      </td>
-                      <td
-                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
-                      >
-                        01/01/2025
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">
-                        <span
-                          class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800"
-                        >
-                          Pendente
-                        </span>
-                      </td>
-                      <td
-                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
-                      >
-                        <div class="flex space-x-2">
-                          <button
-                            class="text-blue-600 hover:text-blue-800 transition-colors"
-                            title="Ver mais"
-                          >
-                            <svg
-                              class="w-5 h-5"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                              ></path>
-                              <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                              ></path>
-                            </svg>
-                          </button>
-                          <button
-                            class="text-red-600 hover:text-red-800 transition-colors"
-                            title="Deletar"
-                          >
-                            <svg
-                              class="w-5 h-5"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                              ></path>
-                            </svg>
-                          </button>
-                          <button
-                            class="text-green-600 hover:text-green-800 transition-colors"
-                            title="Download"
-                            onclick="downloadBasellPdf('checklist-1')"
-                          >
-                            <svg
-                              class="w-5 h-5"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                              ></path>
-                            </svg>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr class="hover:bg-gray-50 transition-colors">
-                      <td
-                        class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
-                      >
-                        Maria Oliveira
-                      </td>
-                      <td
-                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono"
-                      >
-                        DEF-5678
-                      </td>
-                      <td
-                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
-                      >
-                        02/01/2025
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap">
-                        <span
-                          class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"
-                        >
-                          Concluído
-                        </span>
-                      </td>
-                      <td
-                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
-                      >
-                        <div class="flex space-x-2">
-                          <button
-                            class="text-blue-600 hover:text-blue-800 transition-colors"
-                            title="Ver mais"
-                          >
-                            <svg
-                              class="w-5 h-5"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                              ></path>
-                              <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                              ></path>
-                            </svg>
-                          </button>
-                          <button
-                            class="text-red-600 hover:text-red-800 transition-colors"
-                            title="Deletar"
-                          >
-                            <svg
-                              class="w-5 h-5"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                              ></path>
-                            </svg>
-                          </button>
-                          <button
-                            class="text-green-600 hover:text-green-800 transition-colors"
-                            title="Download"
-                            onclick="downloadBasellPdf('checklist-2')"
-                          >
-                            <svg
-                              class="w-5 h-5"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                              ></path>
-                            </svg>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
+                  <tbody id="basell-table-body" class="bg-white divide-y divide-gray-200">
+                    <!-- Os dados serão carregados dinamicamente via JavaScript -->
                   </tbody>
                 </table>
               </div>
@@ -651,62 +485,257 @@
       </div>
     </footer>
 
+    <!-- Script principal para gerenciar a tabela -->
+    <script src="main.js"></script>
+
     <script>
       /**
-       * Função para fazer download do PDF do checklist Basell
-       * @param {string} checklistId - ID do checklist para gerar o PDF
+       * Função para fazer download do PDF modelo do checklist Basell
+       * @param {string} checklistId - ID do checklist (usado apenas para referência)
+       * @param {Event} event - Evento do clique (opcional)
        */
-      async function downloadBasellPdf(checklistId) {
+      async function downloadBasellPdf(checklistId, event) {
+        let button = null;
+        let originalContent = null;
+
         try {
-          // Verificar se a função generateBasellPdf está disponível
-          if (typeof window.generateBasellPdf !== "function") {
+          // Debug detalhado do carregamento do jsPDF
+          console.log("=== DEBUG jsPDF ===");
+          console.log("window.jsPDF:", window.jsPDF);
+          console.log("typeof window.jsPDF:", typeof window.jsPDF);
+          console.log("window.jsPDF?.jsPDF:", window.jsPDF?.jsPDF);
+          console.log("typeof window.jsPDF?.jsPDF:", typeof window.jsPDF?.jsPDF);
+          
+          // Verificar todas as possíveis formas de carregamento
+          let jsPDF = null;
+          
+          if (window.jsPDF && typeof window.jsPDF.jsPDF === 'function') {
+            jsPDF = window.jsPDF.jsPDF;
+            console.log("jsPDF encontrado em window.jsPDF.jsPDF");
+          } else if (window.jsPDF && typeof window.jsPDF === 'function') {
+            jsPDF = window.jsPDF;
+            console.log("jsPDF encontrado em window.jsPDF");
+          } else if (window.jspdf && typeof window.jspdf.jsPDF === 'function') {
+            jsPDF = window.jspdf.jsPDF;
+            console.log("jsPDF encontrado em window.jspdf.jsPDF");
+          }
+          
+          console.log("jsPDF final:", jsPDF);
+          console.log("typeof jsPDF:", typeof jsPDF);
+          
+          if (!jsPDF || typeof jsPDF !== "function") {
+            console.error("jsPDF não foi encontrado em nenhuma das formas esperadas");
             throw new Error(
-              "Função de geração de PDF não encontrada. Verifique se o arquivo pdfBasell.js foi carregado corretamente."
+              "jsPDF não está carregado. Verifique se a biblioteca jsPDF foi incluída."
             );
           }
+          
+          console.log("jsPDF carregado com sucesso!");
 
           // Mostrar indicador de carregamento
-          const button = event.target.closest("button");
-          const originalContent = button.innerHTML;
-          button.disabled = true;
-          button.innerHTML = `
-            <svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-          `;
+          if (event && event.target) {
+            button = event.target.closest("button");
+            if (button) {
+              originalContent = button.innerHTML;
+              button.disabled = true;
+              button.innerHTML = `
+                <svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+              `;
+            }
+          }
 
-          console.log("Iniciando download do PDF para checklist:", checklistId);
+          console.log("Iniciando download do PDF modelo para:", checklistId);
 
-          // Chamar a função de geração de PDF
-          const success = await window.generateBasellPdf(checklistId);
+          // Gerar PDF modelo com dados de exemplo
+          const success = await generateModelBasellPdf();
 
           if (success) {
-            console.log("PDF gerado com sucesso!");
-            // Mostrar mensagem de sucesso (opcional)
-            // alert('PDF gerado com sucesso!');
+            console.log("PDF modelo gerado com sucesso!");
+            alert('PDF modelo baixado com sucesso!');
           } else {
-            throw new Error("Falha na geração do PDF");
+            throw new Error("Falha na geração do PDF modelo");
           }
         } catch (error) {
-          console.error("Erro ao gerar PDF:", error);
-          alert("Erro ao gerar PDF: " + error.message);
+          console.error("Erro ao gerar PDF modelo:", error);
+          alert("Erro ao gerar PDF modelo: " + error.message);
         } finally {
           // Restaurar botão
-          if (button) {
+          if (button && originalContent) {
             button.disabled = false;
             button.innerHTML = originalContent;
           }
         }
       }
 
+      /**
+       * Gera PDF modelo com dados de exemplo (sem conectar ao banco)
+       */
+      async function generateModelBasellPdf() {
+        try {
+          // Dados modelo para demonstração
+          const checklistModelo = {
+            id: 'modelo-001',
+            motorista: 'João Silva Santos',
+            placa: 'ABC-1234',
+            data: new Date().toLocaleDateString('pt-BR'),
+            verifications: [
+              { id: 1, status: 'Conforme', observation: 'Pneus em bom estado' },
+              { id: 2, status: 'Não Conforme', observation: 'Pastilhas desgastadas' },
+              { id: 3, status: 'Conforme', observation: 'Todas as luzes funcionando' },
+              { id: 4, status: 'Conforme', observation: 'Espelhos ajustados' },
+              { id: 5, status: 'Conforme', observation: 'Direção normal' },
+              { id: 6, status: 'Não aplicável', observation: 'Veículo sem suspensão a ar' },
+              { id: 7, status: 'Conforme', observation: 'Cintos funcionando' },
+              { id: 8, status: 'Conforme', observation: 'Extintor dentro da validade' },
+              { id: 9, status: 'Conforme', observation: 'Documentos em ordem' },
+              { id: 10, status: 'Conforme', observation: 'Carroceria sem avarias' },
+              { id: 11, status: 'Conforme', observation: 'Motor funcionando bem' },
+              { id: 12, status: 'Conforme', observation: 'Sistema elétrico OK' },
+              { id: 13, status: 'Conforme', observation: 'Carga bem amarrada' },
+              { id: 14, status: 'Conforme', observation: 'Veículo liberado' }
+            ],
+            media: [] // Sem mídia para o modelo
+          };
+
+          // Verificar se a função generateBasellPdf está disponível
+          if (typeof window.generateBasellPdf === "function") {
+            // Usar a função original modificando temporariamente buscarDadosChecklist
+            const originalBuscarDados = window.buscarDadosChecklist;
+            
+            // Substituir temporariamente a função de busca
+            window.buscarDadosChecklist = async function(id) {
+              return checklistModelo;
+            };
+            
+            const result = await window.generateBasellPdf('modelo');
+            
+            // Restaurar função original
+            if (originalBuscarDados) {
+              window.buscarDadosChecklist = originalBuscarDados;
+            }
+            
+            return result;
+          } else {
+            // Gerar PDF diretamente usando jsPDF
+            return await generateSimpleModelPdf(checklistModelo);
+          }
+        } catch (error) {
+          console.error('Erro ao gerar PDF modelo:', error);
+          return false;
+        }
+      }
+
+      /**
+       * Gera PDF simples com dados modelo
+       */
+      async function generateSimpleModelPdf(checklist) {
+        try {
+          // Usar a mesma lógica de verificação do jsPDF
+          let jsPDF = null;
+          
+          if (window.jsPDF && typeof window.jsPDF.jsPDF === 'function') {
+            jsPDF = window.jsPDF.jsPDF;
+          } else if (window.jsPDF && typeof window.jsPDF === 'function') {
+            jsPDF = window.jsPDF;
+          } else if (window.jspdf && typeof window.jspdf.jsPDF === 'function') {
+            jsPDF = window.jspdf.jsPDF;
+          }
+          
+          if (!jsPDF || typeof jsPDF !== "function") {
+            throw new Error("jsPDF não está disponível");
+          }
+          
+          const pdf = new jsPDF('p', 'mm', 'a4');
+          
+          // Cabeçalho
+          pdf.setFontSize(16);
+          pdf.setFont('helvetica', 'bold');
+          pdf.text('CHECKLIST BASELL - MODELO', 105, 20, { align: 'center' });
+          
+          // Informações básicas
+          pdf.setFontSize(12);
+          pdf.setFont('helvetica', 'normal');
+          let y = 40;
+          pdf.text(`Motorista: ${checklist.motorista}`, 20, y);
+          y += 10;
+          pdf.text(`Placa: ${checklist.placa}`, 20, y);
+          y += 10;
+          pdf.text(`Data: ${checklist.data}`, 20, y);
+          y += 20;
+          
+          // Título da tabela
+          pdf.setFont('helvetica', 'bold');
+          pdf.text('ITENS DE VERIFICAÇÃO', 20, y);
+          y += 15;
+          
+          // Cabeçalho da tabela
+          pdf.setFontSize(10);
+          pdf.text('Item', 20, y);
+          pdf.text('Status', 100, y);
+          pdf.text('Observação', 140, y);
+          y += 10;
+          
+          // Linha separadora
+          pdf.line(20, y-2, 190, y-2);
+          
+          // Itens da verificação
+          pdf.setFont('helvetica', 'normal');
+          checklist.verifications.forEach((item, index) => {
+            if (y > 270) { // Nova página se necessário
+              pdf.addPage();
+              y = 20;
+            }
+            
+            pdf.text(`${item.id}`, 20, y);
+            pdf.text(item.status, 100, y);
+            pdf.text(item.observation.substring(0, 25), 140, y);
+            y += 8;
+          });
+          
+          // Rodapé
+          pdf.setFontSize(8);
+          pdf.text('PDF Modelo - Sistema de Checklist Digital', 105, 285, { align: 'center' });
+          
+          // Salvar
+          const nomeArquivo = `checklist-basell-modelo-${new Date().getTime()}.pdf`;
+          pdf.save(nomeArquivo);
+          
+          return true;
+        } catch (error) {
+          console.error('Erro ao gerar PDF simples:', error);
+          return false;
+        }
+      }
+
       // Verificar se as dependências estão carregadas quando a página carregar
       document.addEventListener("DOMContentLoaded", function () {
-        // Verificar jsPDF
-        if (typeof window.jsPDF === "undefined") {
+        // Verificar jsPDF com lógica robusta
+        console.log("=== VERIFICAÇÃO INICIAL jsPDF ===");
+        console.log("window.jsPDF:", window.jsPDF);
+        console.log("typeof window.jsPDF:", typeof window.jsPDF);
+        
+        let jsPDF = null;
+        
+        if (window.jsPDF && typeof window.jsPDF.jsPDF === 'function') {
+          jsPDF = window.jsPDF.jsPDF;
+          console.log("✅ jsPDF encontrado em window.jsPDF.jsPDF");
+        } else if (window.jsPDF && typeof window.jsPDF === 'function') {
+          jsPDF = window.jsPDF;
+          console.log("✅ jsPDF encontrado em window.jsPDF");
+        } else if (window.jspdf && typeof window.jspdf.jsPDF === 'function') {
+          jsPDF = window.jspdf.jsPDF;
+          console.log("✅ jsPDF encontrado em window.jspdf.jsPDF");
+        }
+        
+        if (!jsPDF || typeof jsPDF !== "function") {
           console.warn(
-            "jsPDF não foi carregado. Os downloads de PDF podem não funcionar."
+            "❌ jsPDF não foi carregado. Os downloads de PDF podem não funcionar."
           );
+        } else {
+          console.log("✅ jsPDF carregado com sucesso:", typeof jsPDF);
         }
 
         // Verificar pdfBasell.js

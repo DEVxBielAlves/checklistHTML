@@ -747,12 +747,25 @@ async function generateBasellPdf(checklistId) {
   try {
     console.log("Iniciando geração de PDF para checklist:", checklistId);
 
-    // Verificar se jsPDF está disponível
-    if (typeof window.jsPDF === "undefined") {
+    // Verificar se jsPDF está disponível com lógica robusta
+    console.log("🔍 Verificando carregamento do jsPDF...");
+    console.log("📊 window.jsPDF:", typeof window.jsPDF, window.jsPDF);
+    console.log("📊 window.jsPDF?.jsPDF:", typeof window.jsPDF?.jsPDF, window.jsPDF?.jsPDF);
+    console.log("📊 window.jspdf:", typeof window.jspdf, window.jspdf);
+    
+    // Verificação robusta que testa todas as possíveis formas de carregamento
+    const jsPDF = window.jsPDF?.jsPDF || window.jsPDF || window.jspdf?.jsPDF;
+    
+    console.log("🎯 jsPDF detectado:", typeof jsPDF, jsPDF);
+    
+    if (typeof jsPDF === "undefined" || jsPDF === null) {
+      console.error("❌ jsPDF não foi detectado em nenhuma das formas de carregamento");
       throw new Error(
         "jsPDF não está carregado. Certifique-se de incluir a biblioteca jsPDF."
       );
     }
+    
+    console.log("✅ jsPDF carregado com sucesso no pdfBasell.js!");
 
     // Buscar dados do checklist
     const checklist = await buscarDadosChecklist(checklistId);
@@ -761,7 +774,7 @@ async function generateBasellPdf(checklistId) {
     }
 
     // Criar novo documento PDF
-    const pdf = new window.jsPDF("p", "mm", "a4");
+    const pdf = new jsPDF("p", "mm", "a4");
     const pageWidth = pdf.internal.pageSize.width;
     let pageNumber = 1;
 

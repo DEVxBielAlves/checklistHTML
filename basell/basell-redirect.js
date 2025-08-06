@@ -438,20 +438,29 @@ function handleEtapa1ItemSelection(itemNumber, status, clickedButton) {
 
 // Verificar se a Etapa 1 está completa
 function checkEtapa1Completion() {
-  const totalItems = 9;
-  const completedItems = Object.keys(checklistData.items).length;
+  const requiredItems = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
+  let allAnswered = true;
+  
+  // Verificar se cada item obrigatório foi respondido
+  for (const itemId of requiredItems) {
+    if (!checklistData.items || !checklistData.items[`item${itemId}`]) {
+      allAnswered = false;
+      break;
+    }
+  }
 
   const nextStepBtn = document.getElementById("nextStepBtn");
 
-  if (completedItems === totalItems && nextStepBtn) {
+  if (allAnswered && nextStepBtn) {
     nextStepBtn.disabled = false;
     nextStepBtn.classList.remove("opacity-50", "cursor-not-allowed");
     nextStepBtn.classList.add("hover:bg-blue-700");
-    console.log("✅ Etapa 1 completa - Botão habilitado");
+    console.log(`✅ Etapa 1 completa - ${Object.keys(checklistData.items || {}).length}/9 itens respondidos`);
   } else if (nextStepBtn) {
     nextStepBtn.disabled = true;
     nextStepBtn.classList.add("opacity-50", "cursor-not-allowed");
     nextStepBtn.classList.remove("hover:bg-blue-700");
+    console.log(`❌ Etapa 1 incompleta - ${Object.keys(checklistData.items || {}).length}/9 itens respondidos`);
   }
 }
 

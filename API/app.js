@@ -14,12 +14,7 @@ const PORT = process.env.API_PORT || 5001;
 // Middlewares
 app.use(
   cors({
-    origin: [
-      "http://localhost:3000",
-      "http://localhost:8000",
-      "http://127.0.0.1:8000",
-      "http://127.0.0.1:5500",
-    ],
+    origin: true, // Permite acesso de qualquer origem
     credentials: true,
   })
 );
@@ -98,13 +93,31 @@ const startServer = async () => {
     await sequelize.sync({ force: false });
     console.log("✅ Modelos sincronizados com sucesso!");
 
-    // Iniciar servidor
-    app.listen(PORT, () => {
+    // Iniciar servidor em todas as interfaces
+    app.listen(PORT, '0.0.0.0', () => {
+      const os = require('os');
+      const networkInterfaces = os.networkInterfaces();
+      let localIP = 'localhost';
+      
+      // Encontrar o IP local da máquina
+      for (const interfaceName in networkInterfaces) {
+        const interfaces = networkInterfaces[interfaceName];
+        for (const iface of interfaces) {
+          if (iface.family === 'IPv4' && !iface.internal) {
+            localIP = iface.address;
+            break;
+          }
+        }
+        if (localIP !== 'localhost') break;
+      }
+      
       console.log("🚀 ========================================");
       console.log(`🚀 API Checklist rodando na porta ${PORT}`);
-      console.log(`🚀 URL: http://localhost:${PORT}`);
-      console.log(`🚀 Health Check: http://localhost:${PORT}/api/health`);
-      console.log(`🚀 Documentação: http://localhost:${PORT}/`);
+      console.log(`🚀 URL Local: http://localhost:${PORT}`);
+      console.log(`🚀 URL Rede: http://${localIP}:${PORT}`);
+      console.log(`📱 Para celular: http://${localIP}:${PORT}`);
+      console.log(`🚀 Health Check: http://${localIP}:${PORT}/api/health`);
+      console.log(`🚀 Documentação: http://${localIP}:${PORT}/`);
       console.log("🚀 ========================================");
     });
   } catch (error) {
